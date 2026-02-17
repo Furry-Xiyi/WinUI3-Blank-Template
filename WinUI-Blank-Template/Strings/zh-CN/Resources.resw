@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>	
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>1.3</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+<data name="AppDisplayName" xml:space="preserve">
+  <value>WinUI3模板</value>
+</data>
+<data name="AppTitle" xml:space="preserve">
+  <value>WinUI3模板</value>
+</data>
+
+<data name="HomeItem.Content" xml:space="preserve">
+  <value>主页</value>
+</data>
+
+<data name="HomePageWelcomeText.Text" xml:space="preserve">
+  <value>欢迎来到主页，这是一个WinUI3模板应用</value>
+</data>
+
+  <data name="AppearanceGroup.Text" xml:space="preserve">
+    <value>外观与材质</value>
+  </data>
+
+  <data name="ThemeTitle.Text" xml:space="preserve">
+    <value>应用主题</value>
+  </data>
+  <data name="ThemeSubtitle.Text" xml:space="preserve">
+    <value>选择浅色、深色或跟随系统</value>
+  </data>
+  <data name="ThemeSystem.Content" xml:space="preserve">
+    <value>跟随系统</value>
+  </data>
+  <data name="ThemeLight.Content" xml:space="preserve">
+    <value>浅色</value>
+  </data>
+  <data name="ThemeDark.Content" xml:space="preserve">
+    <value>深色</value>
+  </data>
+
+  <data name="MaterialTitle.Text" xml:space="preserve">
+    <value>背景材质</value>
+  </data>
+  <data name="MaterialSubtitle.Text" xml:space="preserve">
+    <value>选择 Mica 或 Acrylic</value>
+  </data>
+
+  <data name="NavGroup.Text" xml:space="preserve">
+    <value>导航栏</value>
+  </data>
+  <data name="PanePositionCombo.Header" xml:space="preserve">
+    <value>导航栏位置</value>
+  </data>
+  <data name="PanePositionLeft.Content" xml:space="preserve">
+  <value>左侧</value>
+</data>
+<data name="PanePositionTop.Content" xml:space="preserve">
+  <value>顶部</value>
+</data>
+
+  <data name="SoundGroup.Text" xml:space="preserve">
+    <value>声音</value>
+  </data>
+  <data name="SoundToggle.Header" xml:space="preserve">
+    <value>启用控件声音</value>
+  </data>
+
+  <data name="AboutGroup.Text" xml:space="preserve">
+    <value>关于</value>
+  </data>
+
+  <data name="QQGroup.Text" xml:space="preserve">
+    <value>QQ群</value>
+  </data>
+<data name="DiscordGroup.Text" xml:space="preserve">
+    <value>Discord频道</value>
+  </data>
+  <data name="Feedback.Text" xml:space="preserve">
+    <value>发送反馈</value>
+  </data>
+
+  <!-- ExternalOpenDialog keys (x:Uid style) -->
+  <data name="ExternalOpenDialog.Title" xml:space="preserve">
+    <value>此应用尝试打开外部应用</value>
+  </data>
+  <data name="ExternalOpenDialog.PrimaryButtonText" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="ExternalOpenDialog.SecondaryButtonText" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="DialogMessage.Text" xml:space="preserve">
+    <value>是否允许？</value>
+  </data>
+</root>

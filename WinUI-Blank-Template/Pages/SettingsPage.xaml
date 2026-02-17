@@ -1,0 +1,153 @@
+<Page
+    x:Class="WinUI3.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="20">
+        <StackPanel Spacing="32">
+
+            <!-- 外观与材质组 -->
+            <StackPanel Spacing="12">
+                <TextBlock x:Uid="AppearanceGroup"
+                           FontSize="20"
+                           FontWeight="SemiBold"/>
+
+                <!-- 应用主题折叠卡 -->
+                <Expander IsExpanded="False"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          MinHeight="70">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <FontIcon Glyph="&#xE706;" Width="30" FontSize="20"/>
+                            <StackPanel>
+                                <TextBlock x:Uid="ThemeTitle"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Uid="ThemeSubtitle"
+                                           FontSize="12"
+                                           Opacity="0.7"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Expander.Header>
+                    <!-- 索引 0=System  1=Light  2=Dark -->
+                    <RadioButtons x:Name="RbTheme"
+                                  SelectionChanged="RbTheme_SelectionChanged"
+                                  Padding="12,0,0,12">
+                        <RadioButton x:Uid="ThemeSystem" Tag="System"/>
+                        <RadioButton x:Uid="ThemeLight"  Tag="Light"/>
+                        <RadioButton x:Uid="ThemeDark"   Tag="Dark"/>
+                    </RadioButtons>
+                </Expander>
+
+                <!-- 背景材质折叠卡 -->
+                <Expander IsExpanded="False"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          MinHeight="70">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <FontIcon Glyph="&#xE2B1;" Width="30" FontSize="20"/>
+                            <StackPanel>
+                                <TextBlock x:Uid="MaterialTitle"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Uid="MaterialSubtitle"
+                                           FontSize="12"
+                                           Opacity="0.7"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Expander.Header>
+                    <!-- 索引 0=Mica  1=MicaAlt  2=Acrylic -->
+                    <RadioButtons x:Name="RbMaterial"
+                                  SelectionChanged="RbMaterial_SelectionChanged"
+                                  Padding="12,0,0,12">
+                        <RadioButton Content="Mica"     Tag="Mica"/>
+                        <RadioButton Content="Mica Alt" Tag="MicaAlt"/>
+                        <RadioButton Content="Acrylic"  Tag="Acrylic"/>
+                    </RadioButtons>
+                </Expander>
+            </StackPanel>
+
+            <!-- 导航栏设置 -->
+            <StackPanel Spacing="12">
+                <TextBlock x:Uid="NavGroup"
+                           FontSize="20"
+                           FontWeight="SemiBold"/>
+                <ComboBox x:Name="PanePositionCombo"
+                          x:Uid="PanePositionCombo"
+                          SelectionChanged="PanePositionCombo_SelectionChanged">
+                    <ComboBoxItem x:Uid="PanePositionLeft"/>
+                    <ComboBoxItem x:Uid="PanePositionTop"/>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- 声音设置 -->
+            <StackPanel Spacing="12">
+                <TextBlock x:Uid="SoundGroup"
+                           FontSize="20"
+                           FontWeight="SemiBold"/>
+                <ToggleSwitch x:Name="SoundToggle"
+                              x:Uid="SoundToggle"
+                              Toggled="SoundToggle_Toggled"/>
+            </StackPanel>
+
+            <!-- 关于组 -->
+            <StackPanel Spacing="12">
+                <TextBlock x:Uid="AboutGroup"
+                           FontSize="20"
+                           FontWeight="SemiBold"/>
+
+                <Expander IsExpanded="False"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
+                          MinHeight="80">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Image x:Name="ImgAppIcon"
+                                   Width="30" Height="30"
+                                   Stretch="Uniform"
+                                   Margin="4,0,4,0"/>
+                            <StackPanel>
+                                <TextBlock x:Name="TxtAppName"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TxtCopyright"
+                                           FontSize="12"
+                                           Opacity="0.7"/>
+                                <TextBlock x:Name="TxtVersion"
+                                           FontSize="14"
+                                           Opacity="0.8"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel>
+                        <HyperlinkButton Click="OpenExternalLink"
+                                         Tag="https://qm.qq.com/q/UPnTGW164m"
+                                         HorizontalAlignment="Left">
+                            <TextBlock x:Uid="QQGroup" VerticalAlignment="Center"/>
+                        </HyperlinkButton>
+                        <HyperlinkButton Click="OpenExternalLink"
+                                         Tag="https://discord.gg/4NScc8sEzw"
+                                         HorizontalAlignment="Left">
+                            <TextBlock x:Uid="DiscordGroup" VerticalAlignment="Center"/>
+                        </HyperlinkButton>
+                    </StackPanel>
+                </Expander>
+
+                <!-- 发送反馈 -->
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xED15;" FontSize="20" VerticalAlignment="Center"/>
+                    <HyperlinkButton Click="OpenExternalLink"
+                                     Tag="https://github.com/Furry-Xiyi/WinUI3-Blank-Template"
+                                     Padding="0"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center">
+                        <TextBlock x:Uid="Feedback"/>
+                    </HyperlinkButton>
+                </StackPanel>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
