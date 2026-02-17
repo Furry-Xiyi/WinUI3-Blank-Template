@@ -1,0 +1,24 @@
+﻿<Page
+    x:Class="WinUI3.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid>
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="12">
+
+            <TextBlock x:Uid="HomePageWelcomeText"
+                       HorizontalAlignment="Center"
+                       FontSize="24"/>
+
+            <Button x:Uid="HomePageJoinButton"
+                    HorizontalAlignment="Center"
+                    Content="Github"
+                    Tag="https://github.com/Furry-Xiyi/WinUI3-Blank-Template"
+                    Click="OpenLink_Click"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Width="180"/>
+        </StackPanel>
+    </Grid>
+</Page>
