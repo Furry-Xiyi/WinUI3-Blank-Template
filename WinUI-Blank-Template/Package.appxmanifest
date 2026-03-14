@@ -11,13 +11,13 @@
   <Identity
     Name="28AE62C8.FurryXiyi.WinUI3Template"
     Publisher="CN=69199A48-A765-47C7-BD15-A581600DBBC9"
-    Version="1.1.0.0" />
+    Version="1.2.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="52a58b31-5eac-47ee-901d-ec38545aac02" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
-    <PublisherDisplayName>墨枭想睡觉😪💤🐾</PublisherDisplayName>
+    <PublisherDisplayName>惜忆想睡觉</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

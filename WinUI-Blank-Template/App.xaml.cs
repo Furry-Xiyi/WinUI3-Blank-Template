@@ -50,19 +50,24 @@ namespace WinUI3
 
             MainWindow = new MainWindow();
 
-            try { MainWindow.AppWindow.SetIcon("Assets/AppIcon.ico"); }
-            catch { }
-
-            AppThemeManager.ApplyMaterial();
+            // ✅ SetupTitleBar 只操作 AppWindow.TitleBar，不依赖 XAML 资源
+            // 必须在 Activate() 之前调用，否则窗口弹出瞬间会闪原生标题栏
             AppThemeManager.SetupTitleBar();
 
-            var loader = new ResourceLoader();
-            MainWindow.AppWindow.Title = loader.GetString("AppTitle");
-
+            // ✅ 立刻激活窗口，Splash 遮罩第一帧就可见，用户感知秒开
             MainWindow.Activate();
 
-            // ── 启动 Splash（窗口激活后立即触发）───────────────────
-            ((MainWindow)MainWindow).ShowSplash();
+            // ✅ 其余初始化全部延后到下一帧，Splash 完全遮住，用户无感知
+            MainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+                try { MainWindow.AppWindow.SetIcon("Assets/AppIcon.ico"); } catch { }
+                AppThemeManager.ApplyMaterial();
+
+                var loader = new ResourceLoader();
+                MainWindow.AppWindow.Title = loader.GetString("AppTitle");
+
+                ((MainWindow)MainWindow).ShowSplash();
+            });
         }
 
         // ── Win32：把窗口拉到前台 ────────────────────────────────────
@@ -181,14 +186,14 @@ namespace WinUI3
 
                 var fg = isDark ? Colors.White : Colors.Black;
                 var inactiveFg = isDark
-                    ? Color.FromArgb(255, 128, 128, 128)   // 深色模式：中灰
-                    : Color.FromArgb(255, 160, 160, 160);  // 浅色模式：浅灰
+                    ? Color.FromArgb(255, 128, 128, 128)
+                    : Color.FromArgb(255, 160, 160, 160);
                 var hoverBg = isDark
                     ? Color.FromArgb(20, 255, 255, 255)
                     : Color.FromArgb(20, 0, 0, 0);
 
                 titleBar.ButtonForegroundColor = fg;
-                titleBar.ButtonInactiveForegroundColor = inactiveFg;  // 不透明灰，稳定生效
+                titleBar.ButtonInactiveForegroundColor = inactiveFg;
                 titleBar.ButtonHoverBackgroundColor = hoverBg;
                 titleBar.ButtonHoverForegroundColor = fg;
                 titleBar.ButtonPressedBackgroundColor = Color.FromArgb(30, hoverBg.R, hoverBg.G, hoverBg.B);

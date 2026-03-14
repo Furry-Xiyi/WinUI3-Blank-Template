@@ -24,7 +24,6 @@ namespace WinUI3
         //公共打开链接弹出对话框方法
         public async void OpenExternalLink(object sender, RoutedEventArgs e)
         {
-            // 从当前页面获取 XamlRoot
             var root = (ContentFrame.Content as FrameworkElement)?.XamlRoot;
             if (root == null)
                 return;
@@ -51,11 +50,12 @@ namespace WinUI3
         {
             this.InitializeComponent();
             Instance = this;
+
             if (Content is FrameworkElement root)
                 root.RequestedTheme = AppThemeManager.CurrentTheme;
 
-            TitleBarAppName.Text = Package.Current.DisplayName;
-            ImgAppIcon.Source = new BitmapImage(Package.Current.Logo);
+            // ✅ Package.Current 冷启动很慢，移到 Root_Loaded 里，由 Splash 遮住
+            // TitleBarAppName.Text / ImgAppIcon.Source 在 Root_Loaded 填充
 
             this.SetTitleBar(TitleBarArea);
 
@@ -124,8 +124,7 @@ namespace WinUI3
                 return;
             }
 
-            // 约定反推：HomePage → "home"
-            string pageName = pageType?.Name; // e.g. "HomePage"
+            string pageName = pageType?.Name;
             if (pageName == null) return;
 
             foreach (var item in NavView.MenuItems.OfType<NavigationViewItem>())
@@ -211,6 +210,10 @@ namespace WinUI3
 
         private void Root_Loaded(object sender, RoutedEventArgs e)
         {
+            // ✅ Splash 遮住，在这里做慢操作用户完全无感知
+            TitleBarAppName.Text = Package.Current.DisplayName;
+            ImgAppIcon.Source = new BitmapImage(Package.Current.Logo);
+
             ApplySettings();
             UpdateBackButton();
 
