@@ -14,7 +14,6 @@
 
             <Button x:Uid="HomePageJoinButton"
                     HorizontalAlignment="Center"
-                    Content="Github"
                     Tag="https://github.com/Furry-Xiyi/WinUI3-Blank-Template"
                     Click="OpenLink_Click"
                     Style="{StaticResource AccentButtonStyle}"

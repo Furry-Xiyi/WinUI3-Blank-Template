@@ -156,7 +156,7 @@
   <data name="NavGroup.Text" xml:space="preserve">
     <value>Navigation</value>
   </data>
-  <data name="PanePositionCombo.Header" xml:space="preserve">
+  <data name="NavTitle.Text" xml:space="preserve">
     <value>Navigation Pane Position</value>
   </data>
   <data name="PanePositionLeft.Content" xml:space="preserve">
@@ -167,9 +167,6 @@
   </data>
   <data name="SoundGroup.Text" xml:space="preserve">
     <value>Sound</value>
-  </data>
-  <data name="SoundToggle.Header" xml:space="preserve">
-    <value>Enable Control Sounds</value>
   </data>
   <data name="AboutGroup.Text" xml:space="preserve">
     <value>About</value>
@@ -194,5 +191,17 @@
   </data>
   <data name="DialogMessage.Text" xml:space="preserve">
     <value>Do you allow it?</value>
+  </data>
+  <data name="NavSubtitle.Text" xml:space="preserve">
+    <value>Set the navigation bar to display on the left or top</value>
+  </data>
+  <data name="SoundTitle.Text" xml:space="preserve">
+    <value>Control sound</value>
+  </data>
+  <data name="SoundSubtitle.Text" xml:space="preserve">
+    <value>Control interaction sounds in the app</value>
+  </data>
+  <data name="HomePageJoinButton.Content" xml:space="preserve">
+    <value>View GitHub repository</value>
   </data>
 </root>
