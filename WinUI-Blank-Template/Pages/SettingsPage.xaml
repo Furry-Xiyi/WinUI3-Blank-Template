@@ -76,7 +76,8 @@
                            FontSize="20"
                            FontWeight="SemiBold"/>
 
-                <controls:SettingsCard HorizontalAlignment="Stretch">
+                <controls:SettingsCard HorizontalAlignment="Stretch" MinHeight="70"
+Padding="16,0,16,0">
                     <controls:SettingsCard.Header>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <FontIcon Glyph="&#xE700;" Width="30" FontSize="20"/>
@@ -107,7 +108,8 @@
                            FontSize="20"
                            FontWeight="SemiBold"/>
 
-                <controls:SettingsCard HorizontalAlignment="Stretch">
+                <controls:SettingsCard HorizontalAlignment="Stretch" MinHeight="70"
+Padding="16,0,16,0">
                     <controls:SettingsCard.Header>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <FontIcon Glyph="&#xE767;" Width="30" FontSize="20"/>
