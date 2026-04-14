@@ -4,34 +4,32 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls">
 
-    <ScrollViewer Padding="20">
+    <ScrollViewer Padding="20,20,20,0">
+
         <StackPanel Spacing="32">
 
-            <!-- 外观与材质组 -->
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="3">
                 <TextBlock x:Uid="AppearanceGroup"
                            FontSize="20"
                            FontWeight="SemiBold"/>
 
-                <!-- 应用主题折叠卡 -->
                 <Expander IsExpanded="False"
-                          HorizontalAlignment="Stretch"
-                          HorizontalContentAlignment="Left"
-                          MinHeight="70">
+                           HorizontalAlignment="Stretch"
+                           HorizontalContentAlignment="Left"
+                           MinHeight="74">
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <FontIcon Glyph="&#xE706;" Width="30" FontSize="20"/>
-                            <StackPanel>
+                            <FontIcon Glyph="&#xE706;" Width="25" FontSize="20"/>
+                            <StackPanel Margin="6,0,0,0">
                                 <TextBlock x:Uid="ThemeTitle"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"/>
+                                       FontSize="14"
+                                       FontWeight="SemiBold"/>
                                 <TextBlock x:Uid="ThemeSubtitle"
-                                           FontSize="12"
-                                           Opacity="0.7"/>
+                                       FontSize="12"
+                                       Opacity="0.7"/>
                             </StackPanel>
                         </StackPanel>
                     </Expander.Header>
-                    <!-- 索引 0=System  1=Light  2=Dark -->
                     <RadioButtons x:Name="RbTheme"
                                   SelectionChanged="RbTheme_SelectionChanged"
                                   Padding="12,0,0,12">
@@ -41,25 +39,23 @@
                     </RadioButtons>
                 </Expander>
 
-                <!-- 背景材质折叠卡 -->
                 <Expander IsExpanded="False"
-                          HorizontalAlignment="Stretch"
-                          HorizontalContentAlignment="Left"
-                          MinHeight="70">
+                           HorizontalAlignment="Stretch"
+                           HorizontalContentAlignment="Left"
+                           MinHeight="74">
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <FontIcon Glyph="&#xE2B1;" Width="30" FontSize="20"/>
-                            <StackPanel>
+                            <FontIcon Glyph="&#xE2B1;" Width="25" FontSize="20"/>
+                            <StackPanel Margin="6,0,0,0">
                                 <TextBlock x:Uid="MaterialTitle"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"/>
+                                       FontSize="14"
+                                       FontWeight="SemiBold"/>
                                 <TextBlock x:Uid="MaterialSubtitle"
-                                           FontSize="12"
-                                           Opacity="0.7"/>
+                                       FontSize="12"
+                                       Opacity="0.7"/>
                             </StackPanel>
                         </StackPanel>
                     </Expander.Header>
-                    <!-- 索引 0=Mica  1=MicaAlt  2=Acrylic -->
                     <RadioButtons x:Name="RbMaterial"
                                   SelectionChanged="RbMaterial_SelectionChanged"
                                   Padding="12,0,0,12">
@@ -70,28 +66,16 @@
                 </Expander>
             </StackPanel>
 
-            <!-- 导航栏设置 -->
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="3">
                 <TextBlock x:Uid="NavGroup"
                            FontSize="20"
                            FontWeight="SemiBold"/>
 
-                <controls:SettingsCard HorizontalAlignment="Stretch" MinHeight="70"
-Padding="16,0,16,0">
-                    <controls:SettingsCard.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <FontIcon Glyph="&#xE700;" Width="30" FontSize="20"/>
-                            <StackPanel>
-                                <TextBlock FontSize="16"
-                                           FontWeight="SemiBold"
-                                           x:Uid="NavTitle"/>
-                                <TextBlock FontSize="12"
-                                           Opacity="0.7"
-                                           x:Uid="NavSubtitle"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </controls:SettingsCard.Header>
-
+                <controls:SettingsCard x:Uid="Settings_NavCard" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                       MinHeight="74" Padding="16,0">
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE700;" />
+                    </controls:SettingsCard.HeaderIcon>
                     <ComboBox x:Name="PanePositionCombo"
                               Width="160"
                               HorizontalAlignment="Right"
@@ -102,83 +86,69 @@ Padding="16,0,16,0">
                 </controls:SettingsCard>
             </StackPanel>
 
-            <!-- 声音设置 -->
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="3">
                 <TextBlock x:Uid="SoundGroup"
                            FontSize="20"
                            FontWeight="SemiBold"/>
 
-                <controls:SettingsCard HorizontalAlignment="Stretch" MinHeight="70"
-Padding="16,0,16,0">
-                    <controls:SettingsCard.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <FontIcon Glyph="&#xE767;" Width="30" FontSize="20"/>
-                            <StackPanel>
-                                <TextBlock FontSize="16"
-                                           FontWeight="SemiBold"
-                                           x:Uid="SoundTitle"/>
-                                <TextBlock FontSize="12"
-                                           Opacity="0.7"
-                                           x:Uid="SoundSubtitle"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </controls:SettingsCard.Header>
-
+                <controls:SettingsCard x:Uid="Settings_SoundCard" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                       MinHeight="74" Padding="16,0">
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE767;" />
+                    </controls:SettingsCard.HeaderIcon>
                     <ToggleSwitch x:Name="SoundToggle"
                                   HorizontalAlignment="Right"
                                   Toggled="SoundToggle_Toggled"/>
                 </controls:SettingsCard>
             </StackPanel>
 
-            <!-- 关于组 -->
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="3">
                 <TextBlock x:Uid="AboutGroup"
-                           FontSize="20"
-                           FontWeight="SemiBold"/>
+                       FontSize="20"
+                       FontWeight="SemiBold"/>
 
                 <Expander IsExpanded="False"
-                          HorizontalAlignment="Stretch"
-                          HorizontalContentAlignment="Left"
-                          MinHeight="80">
+                           HorizontalAlignment="Stretch"
+                           HorizontalContentAlignment="Left"
+                           MinHeight="94">
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Image x:Name="ImgAppIcon"
-                                   Width="30"
-                                   Height="30"
-                                   Stretch="Uniform"
-                                   Margin="4,0,4,0"/>
+                               Width="20"
+                               Height="20"
+                               Stretch="Uniform"
+                               Margin="4,0,4,0"/>
                             <StackPanel>
                                 <TextBlock x:Name="TxtAppName"
-                                           FontSize="18"
-                                           FontWeight="SemiBold"/>
+                                       FontSize="14"
+                                       FontWeight="SemiBold"/>
                                 <TextBlock x:Name="TxtCopyright"
-                                           FontSize="12"
-                                           Opacity="0.7"/>
+                                       FontSize="12"
+                                       Opacity="0.7"/>
                                 <TextBlock x:Name="TxtVersion"
-                                           FontSize="14"
-                                           Opacity="0.8"/>
+                                       FontSize="14"
+                                       Opacity="0.7"/>
                             </StackPanel>
                         </StackPanel>
                     </Expander.Header>
                     <StackPanel>
                         <HyperlinkButton Click="OpenLink_Click"
-                                         Tag="https://qm.qq.com/q/UPnTGW164m"
-                                         HorizontalAlignment="Left">
+                                     Tag="https://qm.qq.com/q/UPnTGW164m"
+                                     HorizontalAlignment="Left">
                             <TextBlock x:Uid="QQGroup" VerticalAlignment="Center"/>
                         </HyperlinkButton>
                         <HyperlinkButton Click="OpenLink_Click"
-                                         Tag="https://discord.gg/4NScc8sEzw"
-                                         HorizontalAlignment="Left">
+                                     Tag="https://discord.gg/4NScc8sEzw"
+                                     HorizontalAlignment="Left">
                             <TextBlock x:Uid="DiscordGroup" VerticalAlignment="Center"/>
                         </HyperlinkButton>
                     </StackPanel>
                 </Expander>
 
-                <!-- 发送反馈 -->
-                <StackPanel Orientation="Horizontal" Spacing="8">
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,20,0,20">
                     <FontIcon Glyph="&#xED15;" FontSize="20" VerticalAlignment="Center"/>
                     <HyperlinkButton Click="OpenLink_Click"
-                                     Tag="https://github.com/Furry-Xiyi/WinUI3-Blank-Template/issues"
+                                     Tag="https://forms.office.com/r/jzsFaQKCpr"
                                      Padding="0"
                                      HorizontalAlignment="Left"
                                      VerticalAlignment="Center">
@@ -186,7 +156,6 @@ Padding="16,0,16,0">
                     </HyperlinkButton>
                 </StackPanel>
             </StackPanel>
-
         </StackPanel>
     </ScrollViewer>
 </Page>

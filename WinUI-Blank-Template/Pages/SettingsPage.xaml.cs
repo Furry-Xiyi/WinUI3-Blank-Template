@@ -4,10 +4,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Diagnostics;
-using WinUI3.Dialogs;
 using Windows.ApplicationModel;
 using Windows.Storage;
-using Windows.System;
 
 namespace WinUI3.Pages
 {
@@ -27,7 +25,6 @@ namespace WinUI3.Pages
             LoadUI();
             LoadAppInfo();
             _isInitializing = false;
-            // ActualThemeChanged 已在 MainWindow.Root_Loaded 统一注册，此处无需重复
         }
 
         private void LoadUI()
@@ -143,7 +140,6 @@ namespace WinUI3.Pages
             bool isOn = SoundToggle.IsOn;
             localSettings.Values["EnableSound"] = isOn;
 
-            // 直接设置，不再调 ApplySettings（避免重复执行导航栏逻辑）
             ElementSoundPlayer.State = isOn
                 ? ElementSoundPlayerState.On
                 : ElementSoundPlayerState.Off;

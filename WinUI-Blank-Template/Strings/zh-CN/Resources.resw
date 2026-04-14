@@ -156,7 +156,7 @@
   <data name="NavGroup.Text" xml:space="preserve">
     <value>导航栏</value>
   </data>
-  <data name="NavTitle.Text" xml:space="preserve">
+  <data name="Settings_NavCard.Header" xml:space="preserve">
     <value>导航栏位置</value>
   </data>
   <data name="PanePositionLeft.Content" xml:space="preserve">
@@ -192,16 +192,19 @@
   <data name="DialogMessage.Text" xml:space="preserve">
     <value>是否允许？</value>
   </data>
-  <data name="NavSubtitle.Text" xml:space="preserve">
+  <data name="Settings_NavCard.Description" xml:space="preserve">
     <value>设置导航栏显示在左侧或顶部</value>
   </data>
-  <data name="SoundTitle.Text" xml:space="preserve">
+  <data name="Settings_SoundCard.Header" xml:space="preserve">
     <value>控件声音</value>
-  </data>
-  <data name="SoundSubtitle.Text" xml:space="preserve">
-    <value>控制应用中的交互提示音</value>
   </data>
   <data name="HomePageJoinButton.Content" xml:space="preserve">
     <value>查看Github仓库</value>
+  </data>
+  <data name="Settings_Breadcrumb" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="Settings_SoundCard.Description" xml:space="preserve">
+    <value>控制应用中的交互提示音</value>
   </data>
 </root>

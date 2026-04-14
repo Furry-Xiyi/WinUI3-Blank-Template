@@ -2,7 +2,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Windows.ApplicationModel.Resources;
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -20,8 +22,9 @@ namespace WinUI3
         private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         private static SUBCLASSPROC _subclassProc;
         public static MainWindow Instance { get; private set; }
+        public ObservableCollection<string> BreadcrumbItems { get; } = new ObservableCollection<string>();
+        private readonly ResourceLoader _loader = new ResourceLoader();
 
-        //公共打开链接弹出对话框方法
         public async void OpenExternalLink(object sender, RoutedEventArgs e)
         {
             var root = (ContentFrame.Content as FrameworkElement)?.XamlRoot;
@@ -54,9 +57,6 @@ namespace WinUI3
             if (Content is FrameworkElement root)
                 root.RequestedTheme = AppThemeManager.CurrentTheme;
 
-            // ✅ Package.Current 冷启动很慢，移到 Root_Loaded 里，由 Splash 遮住
-            // TitleBarAppName.Text / ImgAppIcon.Source 在 Root_Loaded 填充
-
             this.SetTitleBar(TitleBarArea);
 
             NavView.SelectedItem = NavView.MenuItems[0];
@@ -72,8 +72,6 @@ namespace WinUI3
             SetMinWindowSize(hwnd, minWidth: 800, minHeight: 520);
         }
 
-        // ── 导航核心：tag → 页面类型（约定：tag首字母大写 + "Page"）──
-        // 例：home → WinUI3.Pages.HomePage，about → WinUI3.Pages.AboutPage
         private static Type TagToPageType(string tag)
         {
             if (string.IsNullOrEmpty(tag)) return null;
@@ -110,12 +108,12 @@ namespace WinUI3
         {
             UpdateBackButton();
             UpdateSelectedNavItem(e.SourcePageType);
+            UpdateBreadcrumb(e.SourcePageType);
         }
 
         private void UpdateBackButton() =>
             NavView.IsBackEnabled = ContentFrame.CanGoBack;
 
-        // 反向查找：当前页类型 → 找到对应 Tag 的 NavItem 并选中
         private void UpdateSelectedNavItem(Type pageType)
         {
             if (pageType == typeof(SettingsPage))
@@ -138,14 +136,26 @@ namespace WinUI3
             }
         }
 
-        // ── 失焦标题文字变灰 ────────────────────────────────────────
+        private void UpdateBreadcrumb(Type pageType)
+        {
+            BreadcrumbItems.Clear();
+            if (pageType == typeof(SettingsPage))
+            {
+                BreadcrumbItems.Add(_loader.GetString("Settings_Breadcrumb"));
+                BreadcrumbPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                BreadcrumbPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
             bool isActive = args.WindowActivationState != WindowActivationState.Deactivated;
             TitleBarAppName.Opacity = isActive ? 1.0 : 0.5;
         }
 
-        // ── Splash ───────────────────────────────────────────────────
         public async void ShowSplash()
         {
             await Task.Delay(1500);
@@ -163,7 +173,6 @@ namespace WinUI3
             SplashFadeOut.Begin();
         }
 
-        // ── 最小尺寸：Win32 Subclass ─────────────────────────────────
         static int _minW, _minH;
 
         static void SetMinWindowSize(IntPtr hwnd, int minWidth, int minHeight)
@@ -206,11 +215,9 @@ namespace WinUI3
         }
         [StructLayout(LayoutKind.Sequential)]
         struct POINT { public int x, y; }
-        // ─────────────────────────────────────────────────────────────
 
         private void Root_Loaded(object sender, RoutedEventArgs e)
         {
-            // ✅ Splash 遮住，在这里做慢操作用户完全无感知
             TitleBarAppName.Text = Package.Current.DisplayName;
             ImgAppIcon.Source = new BitmapImage(Package.Current.Logo);
 

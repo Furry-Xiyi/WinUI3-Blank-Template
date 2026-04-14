@@ -4,26 +4,36 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid>
-        <!-- 自定义标题栏 -->
-        <Grid x:Name="TitleBarArea"
+        <Grid x:Name="WindowTitleBar"
               Height="32"
-              Background="Transparent"
               VerticalAlignment="Top">
-            <StackPanel x:Name="TitleBarContent"
-                        Orientation="Horizontal"
-                        VerticalAlignment="Center"
-                        Margin="16,0">
-                <Image x:Name="ImgAppIcon"
-                       Width="16" Height="16"
-                       VerticalAlignment="Center"
-                       Margin="0,0,8,0"/>
-                <TextBlock x:Name="TitleBarAppName"
-                           VerticalAlignment="Center"
-                           FontSize="14"/>
-            </StackPanel>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Image x:Name="ImgAppIcon"
+                   Width="16" Height="16"
+                   VerticalAlignment="Center"
+                   Margin="16,0,8,0"
+                   Grid.Column="0"/>
+
+            <Grid x:Name="TitleBarArea"
+                  Grid.Column="1"
+                  Height="32"
+                  Background="Transparent"
+                  VerticalAlignment="Center">
+                <StackPanel x:Name="TitleBarContent"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="0,0">
+                    <TextBlock x:Name="TitleBarAppName"
+                               VerticalAlignment="Center"
+                               FontSize="12"/>
+                </StackPanel>
+            </Grid>
         </Grid>
 
-        <!-- 主内容区域 -->
         <Grid Margin="0,32,0,0">
             <NavigationView x:Name="NavView"
                             PaneDisplayMode="Auto"
@@ -38,11 +48,35 @@
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                 </NavigationView.MenuItems>
-                <Frame x:Name="ContentFrame"/>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel x:Name="BreadcrumbPanel" Grid.Row="0"
+                                Orientation="Horizontal" Spacing="4"
+                                Padding="20,16,20,0" VerticalAlignment="Center"
+                                Visibility="Collapsed">
+                        <BreadcrumbBar x:Name="BreadcrumbNav"
+                                       ItemsSource="{x:Bind BreadcrumbItems, Mode=OneWay}">
+                            <BreadcrumbBar.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}"
+                                               FontSize="28"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource SubtitleTextBlockStyle}"/>
+                                </DataTemplate>
+                            </BreadcrumbBar.ItemTemplate>
+                        </BreadcrumbBar>
+                    </StackPanel>
+
+                    <Frame x:Name="ContentFrame" Grid.Row="1"/>
+                </Grid>
             </NavigationView>
         </Grid>
 
-        <!-- Splash 遮罩 -->
         <Grid x:Name="SplashOverlay"
               Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
               Visibility="Visible"
