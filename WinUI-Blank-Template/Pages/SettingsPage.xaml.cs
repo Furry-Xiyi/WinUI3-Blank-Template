@@ -63,13 +63,25 @@ namespace WinUI3.Pages
             {
                 TxtAppName.Text = Package.Current.DisplayName;
                 var v = Package.Current.Id.Version;
-                TxtVersion.Text = $"{v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
+                TxtVersion.Text = $"Version {v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
                 ImgAppIcon.Source = new BitmapImage(Package.Current.Logo);
-                TxtCopyright.Text = $"©{DateTime.Now.Year} {Package.Current.PublisherDisplayName}。保留所有权利。";
+                TxtCopyright.Text = $"© {DateTime.Now.Year} {Package.Current.PublisherDisplayName}";
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"LoadAppInfo 错误: {ex.Message}");
+                // 非打包应用时使用默认值
+                TxtAppName.Text = "WinUI 3 Template";
+                TxtVersion.Text = "Version 1.0.0.0";
+                TxtCopyright.Text = $"© {DateTime.Now.Year} Developer";
+                try
+                {
+                    ImgAppIcon.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.scale-200.png"));
+                }
+                catch
+                {
+                    // 如果图标也加载失败，就不显示
+                }
             }
         }
 
@@ -88,6 +100,7 @@ namespace WinUI3.Pages
                 2 => "Dark",
                 _ => "System"
             };
+
             var theme = RbTheme.SelectedIndex switch
             {
                 1 => ElementTheme.Light,

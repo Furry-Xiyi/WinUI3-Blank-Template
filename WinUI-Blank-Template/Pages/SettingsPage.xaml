@@ -4,189 +4,152 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls">
 
-    <ScrollViewer Padding="20">
-        <StackPanel Spacing="32">
+    <Page.Resources>
+        <!-- 设置页面样式 -->
+        <x:Double x:Key="SettingsCardSpacing">4</x:Double>
 
-            <!-- 外观与材质组 -->
-            <StackPanel Spacing="12">
+        <!-- 组标题样式 -->
+        <Style x:Key="SettingsSectionHeaderTextBlockStyle"
+               BasedOn="{StaticResource BodyStrongTextBlockStyle}"
+               TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="Margin" Value="1,16,0,6" />
+            </Style.Setters>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <Grid Padding="20">
+            <StackPanel MaxWidth="1000" Spacing="{StaticResource SettingsCardSpacing}">
+                <StackPanel.ChildrenTransitions>
+                    <EntranceThemeTransition FromVerticalOffset="50" />
+                    <RepositionThemeTransition IsStaggeringEnabled="True" />
+                </StackPanel.ChildrenTransitions>
+
+                <!-- 页面标题 -->
+                <TextBlock x:Uid="SettingsPageTitle"
+                           Style="{StaticResource TitleTextBlockStyle}"
+                           Margin="1,0,0,16"/>
+
+                <!-- 外观与材质组 -->
                 <TextBlock x:Uid="AppearanceGroup"
-                           FontSize="20"
-                           FontWeight="SemiBold"/>
+                           Style="{StaticResource BodyStrongTextBlockStyle}"
+                           Margin="1,0,0,6"/>
 
-                <!-- 应用主题折叠卡 -->
-                <Expander IsExpanded="False"
-                          HorizontalAlignment="Stretch"
-                          HorizontalContentAlignment="Left"
-                          MinHeight="70">
-                    <Expander.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <FontIcon Glyph="&#xE706;" Width="30" FontSize="20"/>
-                            <StackPanel>
-                                <TextBlock x:Uid="ThemeTitle"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"/>
-                                <TextBlock x:Uid="ThemeSubtitle"
-                                           FontSize="12"
-                                           Opacity="0.7"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Expander.Header>
-                    <!-- 索引 0=System  1=Light  2=Dark -->
-                    <RadioButtons x:Name="RbTheme"
-                                  SelectionChanged="RbTheme_SelectionChanged"
-                                  Padding="12,0,0,12">
-                        <RadioButton x:Uid="ThemeSystem" Tag="System"/>
-                        <RadioButton x:Uid="ThemeLight" Tag="Light"/>
-                        <RadioButton x:Uid="ThemeDark" Tag="Dark"/>
-                    </RadioButtons>
-                </Expander>
+                <!-- 应用主题设置 -->
+                <controls:SettingsExpander x:Uid="ThemeSettingsExpander" IsExpanded="False">
+                    <controls:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE706;"/>
+                    </controls:SettingsExpander.HeaderIcon>
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard ContentAlignment="Left">
+                            <!-- 索引 0=System  1=Light  2=Dark -->
+                            <RadioButtons x:Name="RbTheme"
+                                          SelectionChanged="RbTheme_SelectionChanged">
+                                <RadioButton x:Uid="ThemeSystem" Tag="System"/>
+                                <RadioButton x:Uid="ThemeLight" Tag="Light"/>
+                                <RadioButton x:Uid="ThemeDark" Tag="Dark"/>
+                            </RadioButtons>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
 
-                <!-- 背景材质折叠卡 -->
-                <Expander IsExpanded="False"
-                          HorizontalAlignment="Stretch"
-                          HorizontalContentAlignment="Left"
-                          MinHeight="70">
-                    <Expander.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <FontIcon Glyph="&#xE2B1;" Width="30" FontSize="20"/>
-                            <StackPanel>
-                                <TextBlock x:Uid="MaterialTitle"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"/>
-                                <TextBlock x:Uid="MaterialSubtitle"
-                                           FontSize="12"
-                                           Opacity="0.7"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Expander.Header>
-                    <!-- 索引 0=Mica  1=MicaAlt  2=Acrylic -->
-                    <RadioButtons x:Name="RbMaterial"
-                                  SelectionChanged="RbMaterial_SelectionChanged"
-                                  Padding="12,0,0,12">
-                        <RadioButton Content="Mica" Tag="Mica"/>
-                        <RadioButton Content="Mica Alt" Tag="MicaAlt"/>
-                        <RadioButton Content="Acrylic" Tag="Acrylic"/>
-                    </RadioButtons>
-                </Expander>
-            </StackPanel>
+                <!-- 背景材质设置 -->
+                <controls:SettingsExpander x:Uid="MaterialSettingsExpander" IsExpanded="False">
+                    <controls:SettingsExpander.HeaderIcon>
+                        <FontIcon Glyph="&#xE2B1;"/>
+                    </controls:SettingsExpander.HeaderIcon>
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard ContentAlignment="Left">
+                            <!-- 索引 0=Mica  1=MicaAlt  2=Acrylic -->
+                            <RadioButtons x:Name="RbMaterial"
+                                          SelectionChanged="RbMaterial_SelectionChanged">
+                                <RadioButton x:Uid="MaterialMica" Tag="Mica"/>
+                                <RadioButton x:Uid="MaterialMicaAlt" Tag="MicaAlt"/>
+                                <RadioButton x:Uid="MaterialAcrylic" Tag="Acrylic"/>
+                            </RadioButtons>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
 
-            <!-- 导航栏设置 -->
-            <StackPanel Spacing="12">
+                <!-- 导航栏设置 -->
                 <TextBlock x:Uid="NavGroup"
-                           FontSize="20"
-                           FontWeight="SemiBold"/>
+                           Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 
-                <controls:SettingsCard HorizontalAlignment="Stretch" MinHeight="70"
-Padding="16,0,16,0">
-                    <controls:SettingsCard.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <FontIcon Glyph="&#xE700;" Width="30" FontSize="20"/>
-                            <StackPanel>
-                                <TextBlock FontSize="16"
-                                           FontWeight="SemiBold"
-                                           x:Uid="NavTitle"/>
-                                <TextBlock FontSize="12"
-                                           Opacity="0.7"
-                                           x:Uid="NavSubtitle"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </controls:SettingsCard.Header>
-
+                <controls:SettingsCard x:Uid="NavSettingsCard">
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE700;"/>
+                    </controls:SettingsCard.HeaderIcon>
                     <ComboBox x:Name="PanePositionCombo"
                               Width="160"
-                              HorizontalAlignment="Right"
                               SelectionChanged="PanePositionCombo_SelectionChanged">
                         <ComboBoxItem x:Uid="PanePositionLeft"/>
                         <ComboBoxItem x:Uid="PanePositionTop"/>
                     </ComboBox>
                 </controls:SettingsCard>
-            </StackPanel>
 
-            <!-- 声音设置 -->
-            <StackPanel Spacing="12">
+                <!-- 声音设置 -->
                 <TextBlock x:Uid="SoundGroup"
-                           FontSize="20"
-                           FontWeight="SemiBold"/>
+                           Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 
-                <controls:SettingsCard HorizontalAlignment="Stretch" MinHeight="70"
-Padding="16,0,16,0">
-                    <controls:SettingsCard.Header>
-                        <StackPanel Orientation="Horizontal" Spacing="12">
-                            <FontIcon Glyph="&#xE767;" Width="30" FontSize="20"/>
-                            <StackPanel>
-                                <TextBlock FontSize="16"
-                                           FontWeight="SemiBold"
-                                           x:Uid="SoundTitle"/>
-                                <TextBlock FontSize="12"
-                                           Opacity="0.7"
-                                           x:Uid="SoundSubtitle"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </controls:SettingsCard.Header>
-
+                <controls:SettingsCard x:Uid="SoundSettingsCard">
+                    <controls:SettingsCard.HeaderIcon>
+                        <FontIcon Glyph="&#xE767;"/>
+                    </controls:SettingsCard.HeaderIcon>
                     <ToggleSwitch x:Name="SoundToggle"
-                                  HorizontalAlignment="Right"
                                   Toggled="SoundToggle_Toggled"/>
                 </controls:SettingsCard>
-            </StackPanel>
 
-            <!-- 关于组 -->
-            <StackPanel Spacing="12">
+                <!-- 关于组 -->
                 <TextBlock x:Uid="AboutGroup"
-                           FontSize="20"
-                           FontWeight="SemiBold"/>
+                           Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
 
-                <Expander IsExpanded="False"
-                          HorizontalAlignment="Stretch"
-                          HorizontalContentAlignment="Left"
-                          MinHeight="80">
-                    <Expander.Header>
+                <controls:SettingsExpander IsExpanded="False">
+                    <controls:SettingsExpander.Header>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Image x:Name="ImgAppIcon"
-                                   Width="30"
-                                   Height="30"
-                                   Stretch="Uniform"
-                                   Margin="4,0,4,0"/>
+                                   Width="32"
+                                   Height="32"
+                                   Stretch="Uniform"/>
                             <StackPanel>
                                 <TextBlock x:Name="TxtAppName"
-                                           FontSize="18"
-                                           FontWeight="SemiBold"/>
+                                           FontSize="16"/>
                                 <TextBlock x:Name="TxtCopyright"
                                            FontSize="12"
                                            Opacity="0.7"/>
-                                <TextBlock x:Name="TxtVersion"
-                                           FontSize="14"
-                                           Opacity="0.8"/>
                             </StackPanel>
                         </StackPanel>
-                    </Expander.Header>
-                    <StackPanel>
-                        <HyperlinkButton Click="OpenLink_Click"
-                                         Tag="https://qm.qq.com/q/UPnTGW164m"
-                                         HorizontalAlignment="Left">
-                            <TextBlock x:Uid="QQGroup" VerticalAlignment="Center"/>
-                        </HyperlinkButton>
-                        <HyperlinkButton Click="OpenLink_Click"
-                                         Tag="https://discord.gg/4NScc8sEzw"
-                                         HorizontalAlignment="Left">
-                            <TextBlock x:Uid="DiscordGroup" VerticalAlignment="Center"/>
-                        </HyperlinkButton>
-                    </StackPanel>
-                </Expander>
+                    </controls:SettingsExpander.Header>
+                    <TextBlock x:Name="TxtVersion"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               IsTextSelectionEnabled="True"/>
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard HorizontalContentAlignment="Left" ContentAlignment="Left">
+                            <StackPanel Margin="-12,0,0,0" Spacing="4">
+                                <HyperlinkButton Click="OpenLink_Click"
+                                                 Tag="https://qm.qq.com/q/UPnTGW164m">
+                                    <TextBlock x:Uid="QQGroup"/>
+                                </HyperlinkButton>
+                                <HyperlinkButton Click="OpenLink_Click"
+                                                 Tag="https://discord.gg/4NScc8sEzw">
+                                    <TextBlock x:Uid="DiscordGroup"/>
+                                </HyperlinkButton>
+                            </StackPanel>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
 
                 <!-- 发送反馈 -->
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <FontIcon Glyph="&#xED15;" FontSize="20" VerticalAlignment="Center"/>
-                    <HyperlinkButton Click="OpenLink_Click"
-                                     Tag="https://github.com/Furry-Xiyi/WinUI3-Blank-Template/issues"
-                                     Padding="0"
-                                     HorizontalAlignment="Left"
-                                     VerticalAlignment="Center">
+                <HyperlinkButton Click="OpenLink_Click"
+                                 Tag="https://github.com/Furry-Xiyi/WinUI3-Blank-Template/issues"
+                                 Margin="0,8,0,0">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xED15;" FontSize="16"/>
                         <TextBlock x:Uid="Feedback"/>
-                    </HyperlinkButton>
-                </StackPanel>
-            </StackPanel>
+                    </StackPanel>
+                </HyperlinkButton>
 
-        </StackPanel>
+            </StackPanel>
+        </Grid>
     </ScrollViewer>
 </Page>
