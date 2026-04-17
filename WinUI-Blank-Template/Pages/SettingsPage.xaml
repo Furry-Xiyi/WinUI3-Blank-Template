@@ -78,7 +78,7 @@
 
                 <controls:SettingsCard x:Uid="NavSettingsCard">
                     <controls:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xE700;"/>
+                        <FontIcon Glyph="&#xF594;"/>
                     </controls:SettingsCard.HeaderIcon>
                     <ComboBox x:Name="PanePositionCombo"
                               Width="160"
@@ -94,7 +94,7 @@
 
                 <controls:SettingsCard x:Uid="SoundSettingsCard">
                     <controls:SettingsCard.HeaderIcon>
-                        <FontIcon Glyph="&#xE767;"/>
+                        <FontIcon Glyph="&#xEC4F;"/>
                     </controls:SettingsCard.HeaderIcon>
                     <ToggleSwitch x:Name="SoundToggle"
                                   Toggled="SoundToggle_Toggled"/>
@@ -108,12 +108,13 @@
                     <controls:SettingsExpander.Header>
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Image x:Name="ImgAppIcon"
-                                   Width="32"
-                                   Height="32"
+                                   Width="48"
+                                   Height="48"
                                    Stretch="Uniform"/>
                             <StackPanel>
                                 <TextBlock x:Name="TxtAppName"
-                                           FontSize="16"/>
+                                           FontSize="16"
+                                           FontWeight="SemiBold"/>
                                 <TextBlock x:Name="TxtCopyright"
                                            FontSize="12"
                                            Opacity="0.7"/>

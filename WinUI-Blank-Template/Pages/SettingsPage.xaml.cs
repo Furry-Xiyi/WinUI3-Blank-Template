@@ -61,6 +61,7 @@ namespace WinUI3.Pages
         {
             try
             {
+                // 优先使用 Package 信息
                 TxtAppName.Text = Package.Current.DisplayName;
                 var v = Package.Current.Id.Version;
                 TxtVersion.Text = $"Version {v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
@@ -70,10 +71,20 @@ namespace WinUI3.Pages
             catch (Exception ex)
             {
                 Debug.WriteLine($"LoadAppInfo 错误: {ex.Message}");
-                // 非打包应用时使用默认值
-                TxtAppName.Text = "WinUI 3 Template";
+                // 非打包应用时使用资源文件中的本地化名称
+                var resourceLoader = new Microsoft.Windows.ApplicationModel.Resources.ResourceLoader();
+                try
+                {
+                    TxtAppName.Text = resourceLoader.GetString("AppDisplayName");
+                }
+                catch
+                {
+                    TxtAppName.Text = "WinUI 3 Template";
+                }
+                
                 TxtVersion.Text = "Version 1.0.0.0";
                 TxtCopyright.Text = $"© {DateTime.Now.Year} Developer";
+                
                 try
                 {
                     ImgAppIcon.Source = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.scale-200.png"));
