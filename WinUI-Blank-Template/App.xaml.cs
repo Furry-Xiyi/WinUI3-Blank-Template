@@ -15,7 +15,7 @@ namespace WinUI3
 {
     public partial class App : Application
     {
-        public static Window MainWindow { get; private set; }
+        public static Window MainWindow { get; private set; } = null!;
 
         public App()
         {

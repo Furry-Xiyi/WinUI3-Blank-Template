@@ -20,9 +20,9 @@ namespace WinUI3
     public sealed partial class MainWindow : Window
     {
         private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-        private static SUBCLASSPROC _subclassProc;
+        private static SUBCLASSPROC _subclassProc = null!;
         private AppWindow m_AppWindow;
-        public static MainWindow Instance { get; private set; }
+        public static MainWindow Instance { get; private set; } = null!;
 
         //公共打开链接弹出对话框方法
         public async void OpenExternalLink(object sender, RoutedEventArgs e)
@@ -91,7 +91,7 @@ namespace WinUI3
 
         // ── 导航核心：tag → 页面类型（约定：tag首字母大写 + "Page"）──
         // 例：home → WinUI3.Pages.HomePage，about → WinUI3.Pages.AboutPage
-        private static Type TagToPageType(string tag)
+        private static Type? TagToPageType(string tag)
         {
             if (string.IsNullOrEmpty(tag)) return null;
             string typeName = $"WinUI3.Pages.{char.ToUpper(tag[0])}{tag.Substring(1)}Page";
@@ -114,8 +114,9 @@ namespace WinUI3
                 return;
             }
 
-            string tag = args.InvokedItemContainer?.Tag?.ToString();
-            NavigateByTag(tag);
+            string? tag = args.InvokedItemContainer?.Tag?.ToString();
+            if (!string.IsNullOrEmpty(tag))
+                NavigateByTag(tag);
         }
 
         private void NavView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
@@ -141,13 +142,13 @@ namespace WinUI3
                 return;
             }
 
-            string pageName = pageType?.Name;
+            string? pageName = pageType?.Name;
             if (pageName == null) return;
 
             foreach (var item in NavView.MenuItems.OfType<NavigationViewItem>())
             {
-                string tag = item.Tag?.ToString();
-                if (TagToPageType(tag) == pageType)
+                string? tag = item.Tag?.ToString();
+                if (!string.IsNullOrEmpty(tag) && TagToPageType(tag) == pageType)
                 {
                     NavView.SelectedItem = item;
                     return;
