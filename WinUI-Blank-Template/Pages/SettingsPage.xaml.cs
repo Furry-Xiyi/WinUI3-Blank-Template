@@ -13,7 +13,7 @@ namespace WinUI3.Pages
 {
     public sealed partial class SettingsPage : Page
     {
-        private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        private readonly ApplicationDataContainer _localSettings = ApplicationData.Current.LocalSettings;
         private bool _isInitializing = true;
 
         public SettingsPage()
@@ -32,7 +32,7 @@ namespace WinUI3.Pages
 
         private void LoadUI()
         {
-            string theme = localSettings.Values["AppTheme"] as string ?? "System";
+            string theme = _localSettings.Values["AppTheme"] as string ?? "System";
             RbTheme.SelectedIndex = theme switch
             {
                 "Light" => 1,
@@ -40,7 +40,7 @@ namespace WinUI3.Pages
                 _ => 0
             };
 
-            string material = localSettings.Values["AppMaterial"] as string ?? "MicaAlt";
+            string material = _localSettings.Values["AppMaterial"] as string ?? "MicaAlt";
             RbMaterial.SelectedIndex = material switch
             {
                 "MicaAlt" => 1,
@@ -48,12 +48,12 @@ namespace WinUI3.Pages
                 _ => 0
             };
 
-            string pos = localSettings.Values["PanePosition"] as string ?? "Left";
+            string pos = _localSettings.Values["PanePosition"] as string ?? "Left";
             PanePositionCombo.SelectedIndex = pos == "Top" ? 1 : 0;
 
-            bool sound = localSettings.Values["EnableSound"] is bool b ? b : true;
-            if (localSettings.Values["EnableSound"] == null)
-                localSettings.Values["EnableSound"] = true;
+            bool sound = _localSettings.Values["EnableSound"] is bool b ? b : true;
+            if (_localSettings.Values["EnableSound"] == null)
+                _localSettings.Values["EnableSound"] = true;
             SoundToggle.IsOn = sound;
         }
 
@@ -92,7 +92,8 @@ namespace WinUI3.Pages
 
         private void OpenLink_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.Instance.OpenExternalLink(sender, e);
+            if (MainWindow.Instance != null)
+                MainWindow.Instance.OpenExternalLink(sender, e);
         }
 
         private void RbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -113,7 +114,7 @@ namespace WinUI3.Pages
                 _ => ElementTheme.Default
             };
 
-            localSettings.Values["AppTheme"] = value;
+            _localSettings.Values["AppTheme"] = value;
             AppThemeManager.CurrentTheme = theme;
 
             if (App.MainWindow?.Content is FrameworkElement root)
@@ -133,7 +134,7 @@ namespace WinUI3.Pages
                 _ => "Mica"
             };
 
-            localSettings.Values["AppMaterial"] = value;
+            _localSettings.Values["AppMaterial"] = value;
             AppThemeManager.CurrentMaterial = value switch
             {
                 "MicaAlt" => BackgroundMaterial.MicaAlt,
@@ -148,7 +149,7 @@ namespace WinUI3.Pages
         {
             if (_isInitializing) return;
 
-            localSettings.Values["PanePosition"] = PanePositionCombo.SelectedIndex == 1 ? "Top" : "Left";
+            _localSettings.Values["PanePosition"] = PanePositionCombo.SelectedIndex == 1 ? "Top" : "Left";
 
             if (App.MainWindow is MainWindow mainWindow)
                 mainWindow.ApplySettings();
@@ -159,7 +160,7 @@ namespace WinUI3.Pages
             if (_isInitializing) return;
 
             bool isOn = SoundToggle.IsOn;
-            localSettings.Values["EnableSound"] = isOn;
+            _localSettings.Values["EnableSound"] = isOn;
 
             // 直接设置，不再调 ApplySettings（避免重复执行导航栏逻辑）
             ElementSoundPlayer.State = isOn

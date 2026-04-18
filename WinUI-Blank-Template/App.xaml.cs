@@ -15,7 +15,7 @@ namespace WinUI3
 {
     public partial class App : Application
     {
-        public static Window MainWindow { get; private set; } = null!;
+        public static Window? MainWindow { get; private set; }
 
         public App()
         {
@@ -29,20 +29,26 @@ namespace WinUI3
 
             if (!mainInstance.IsCurrent)
             {
-                mainInstance.RedirectActivationToAsync(
+                // 使用 Task.Run 避免阻塞主线程
+                var redirectTask = mainInstance.RedirectActivationToAsync(
                     AppInstance.GetCurrent().GetActivatedEventArgs()
-                ).GetAwaiter().GetResult();
+                );
+                // 等待重定向完成后退出
+                redirectTask.AsTask().Wait(TimeSpan.FromSeconds(5));
                 Environment.Exit(0);
                 return;
             }
 
             mainInstance.Activated += (_, _) =>
             {
-                MainWindow?.DispatcherQueue.TryEnqueue(() =>
+                if (MainWindow != null)
                 {
-                    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
-                    BringWindowToFront(hwnd);
-                });
+                    MainWindow.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
+                        BringWindowToFront(hwnd);
+                    });
+                }
             };
             // ────────────────────────────────────────────────────────
 
@@ -101,7 +107,11 @@ namespace WinUI3
                     _ => ElementTheme.Default
                 };
             }
-            catch { CurrentTheme = ElementTheme.Default; }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"LoadSettings - Theme error: {ex.Message}");
+                CurrentTheme = ElementTheme.Default;
+            }
 
             try
             {
@@ -113,7 +123,11 @@ namespace WinUI3
                     _ => BackgroundMaterial.Mica
                 };
             }
-            catch { CurrentMaterial = BackgroundMaterial.Mica; }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"LoadSettings - Material error: {ex.Message}");
+                CurrentMaterial = BackgroundMaterial.Mica;
+            }
 
             try
             {
@@ -124,7 +138,11 @@ namespace WinUI3
                     ? ElementSoundPlayerState.On
                     : ElementSoundPlayerState.Off;
             }
-            catch { ElementSoundPlayer.State = ElementSoundPlayerState.On; }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"LoadSettings - Sound error: {ex.Message}");
+                ElementSoundPlayer.State = ElementSoundPlayerState.On;
+            }
         }
 
         public static void ApplyMaterial()

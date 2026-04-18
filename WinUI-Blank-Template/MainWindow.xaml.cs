@@ -4,8 +4,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
+using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -19,33 +19,50 @@ namespace WinUI3
 {
     public sealed partial class MainWindow : Window
     {
-        private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-        private static SUBCLASSPROC _subclassProc = null!;
-        private AppWindow m_AppWindow;
-        public static MainWindow Instance { get; private set; } = null!;
+        // Win32 常量
+        private const uint WM_GETMINMAXINFO = 0x0024;
+        private const int SW_RESTORE = 9;
 
-        //公共打开链接弹出对话框方法
+        private readonly ApplicationDataContainer _localSettings = ApplicationData.Current.LocalSettings;
+        private static SUBCLASSPROC? _subclassProc;
+        private readonly AppWindow _appWindow;
+        private readonly IntPtr _hwnd;
+        
+        public static MainWindow? Instance { get; private set; }
+
+        /// <summary>
+        /// 公共打开链接弹出对话框方法
+        /// </summary>
         public async void OpenExternalLink(object sender, RoutedEventArgs e)
         {
             var root = (ContentFrame.Content as FrameworkElement)?.XamlRoot;
             if (root == null)
                 return;
 
-            if (sender is Button btn && btn.Tag is string url)
-            {
-                var dialog = new ExternalOpenDialog { XamlRoot = root };
-                var result = await dialog.ShowAsync();
-
-                if (result == ContentDialogResult.Primary)
-                    await Launcher.LaunchUriAsync(new Uri(url));
-            }
+            string? url = null;
+            
+            if (sender is Button btn && btn.Tag is string btnUrl)
+                url = btnUrl;
             else if (sender is HyperlinkButton link && link.Tag is string linkUrl)
-            {
-                var dialog = new ExternalOpenDialog { XamlRoot = root };
-                var result = await dialog.ShowAsync();
+                url = linkUrl;
 
-                if (result == ContentDialogResult.Primary)
-                    await Launcher.LaunchUriAsync(new Uri(linkUrl));
+            if (string.IsNullOrEmpty(url))
+                return;
+
+            var dialog = new ExternalOpenDialog { XamlRoot = root };
+            var result = await dialog.ShowAsync();
+
+            // Secondary 按钮表示"是，打开"
+            if (result == ContentDialogResult.Secondary)
+            {
+                try
+                {
+                    await Launcher.LaunchUriAsync(new Uri(url));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to launch URL: {ex.Message}");
+                }
             }
         }
 
@@ -57,11 +74,12 @@ namespace WinUI3
             if (Content is FrameworkElement root)
                 root.RequestedTheme = AppThemeManager.CurrentTheme;
 
-            // ✅ 获取 AppWindow 实例
-            m_AppWindow = GetAppWindowForCurrentWindow();
+            // ✅ 获取 AppWindow 实例和窗口句柄
+            _hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            _appWindow = GetAppWindowForCurrentWindow();
 
             // ✅ 使用官方推荐方式设置窗口图标（立即生效）
-            m_AppWindow.SetIcon("Assets/AppIcon.ico");
+            _appWindow.SetIcon("Assets/AppIcon.ico");
 
             // ✅ 设置标题栏文本
             TitleBarAppName.Text = Package.Current.DisplayName;
@@ -73,12 +91,12 @@ namespace WinUI3
             ContentFrame.Navigated += ContentFrame_Navigated;
 
             this.Activated += MainWindow_Activated;
+            this.Closed += MainWindow_Closed;
 
             if (Content is FrameworkElement rootEl)
                 rootEl.Loaded += Root_Loaded;
 
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            SetMinWindowSize(hwnd, minWidth: 800, minHeight: 520);
+            SetMinWindowSize(_hwnd, minWidth: 800, minHeight: 520);
         }
 
         // ── 获取 AppWindow 实例 ──────────────────────────────────────
@@ -89,13 +107,20 @@ namespace WinUI3
             return AppWindow.GetFromWindowId(wndId);
         }
 
-        // ── 导航核心：tag → 页面类型（约定：tag首字母大写 + "Page"）──
-        // 例：home → WinUI3.Pages.HomePage，about → WinUI3.Pages.AboutPage
+        // ── 导航核心：tag → 页面类型映射 ──
+        private static readonly System.Collections.Generic.Dictionary<string, Type> _pageTypeMap = new()
+        {
+            { "home", typeof(HomePage) },
+            { "settings", typeof(SettingsPage) }
+        };
+
         private static Type? TagToPageType(string tag)
         {
-            if (string.IsNullOrEmpty(tag)) return null;
-            string typeName = $"WinUI3.Pages.{char.ToUpper(tag[0])}{tag.Substring(1)}Page";
-            return Assembly.GetExecutingAssembly().GetType(typeName);
+            if (string.IsNullOrWhiteSpace(tag)) 
+                return null;
+            
+            _pageTypeMap.TryGetValue(tag.ToLowerInvariant(), out var pageType);
+            return pageType;
         }
 
         private void NavigateByTag(string tag)
@@ -163,6 +188,25 @@ namespace WinUI3
             TitleBarAppName.Opacity = isActive ? 1.0 : 0.5;
         }
 
+        // ── 窗口关闭清理 ────────────────────────────────────────────
+        private void MainWindow_Closed(object sender, WindowEventArgs args)
+        {
+            // 清理 Win32 subclass
+            if (_subclassProc != null)
+            {
+                RemoveWindowSubclass(_hwnd, _subclassProc, 0);
+                _subclassProc = null;
+            }
+
+            // 清理事件订阅
+            if (Content is FrameworkElement root)
+            {
+                root.ActualThemeChanged -= AppThemeManager.OnActualThemeChanged;
+            }
+
+            Instance = null;
+        }
+
         // ── Splash ───────────────────────────────────────────────────
         public async void ShowSplash()
         {
@@ -176,7 +220,7 @@ namespace WinUI3
             {
                 SplashOverlay.Visibility = Visibility.Collapsed;
 
-                bool sound = localSettings.Values["EnableSound"] is bool b ? b : true;
+                bool sound = _localSettings.Values["EnableSound"] is bool b ? b : true;
                 ElementSoundPlayer.State = sound
                     ? ElementSoundPlayerState.On
                     : ElementSoundPlayerState.Off;
@@ -199,7 +243,7 @@ namespace WinUI3
         static nuint SubclassProc(IntPtr hWnd, uint uMsg, nuint wParam, nint lParam,
                                    nuint uIdSubclass, nuint dwRefData)
         {
-            if (uMsg == 0x0024)
+            if (uMsg == WM_GETMINMAXINFO)
             {
                 double dpi = GetDpiForWindow(hWnd) / 96.0;
                 var info = Marshal.PtrToStructure<MINMAXINFO>(lParam);
@@ -216,6 +260,8 @@ namespace WinUI3
         [DllImport("comctl32.dll")]
         static extern bool SetWindowSubclass(IntPtr hWnd, SUBCLASSPROC pfnSubclass,
                                               nuint uIdSubclass, nuint dwRefData);
+        [DllImport("comctl32.dll")]
+        static extern bool RemoveWindowSubclass(IntPtr hWnd, SUBCLASSPROC pfnSubclass, nuint uIdSubclass);
         [DllImport("comctl32.dll")]
         static extern nuint DefSubclassProc(IntPtr hWnd, uint uMsg, nuint wParam, nint lParam);
         [DllImport("user32.dll")]
@@ -247,9 +293,9 @@ namespace WinUI3
         {
             try
             {
-                string position = localSettings.Values["PanePosition"] as string ?? "Left";
-                if (localSettings.Values["PanePosition"] == null)
-                    localSettings.Values["PanePosition"] = "Left";
+                string position = _localSettings.Values["PanePosition"] as string ?? "Left";
+                if (_localSettings.Values["PanePosition"] == null)
+                    _localSettings.Values["PanePosition"] = "Left";
 
                 NavView.PaneDisplayMode = position == "Top"
                     ? NavigationViewPaneDisplayMode.Top
@@ -257,7 +303,7 @@ namespace WinUI3
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"ApplySettings Error: {ex.Message}");
+                Debug.WriteLine($"ApplySettings Error: {ex.Message}");
             }
         }
     }
