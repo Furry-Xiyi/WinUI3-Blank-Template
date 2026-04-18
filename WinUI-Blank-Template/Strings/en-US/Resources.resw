@@ -216,4 +216,7 @@
   <data name="DialogMessage.Text" xml:space="preserve">
     <value>Do you allow it?</value>
   </data>
+  <data name="VersionPrefix" xml:space="preserve">
+    <value>Version</value>
+  </data>
 </root>

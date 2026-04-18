@@ -9,18 +9,10 @@
               Height="32"
               Background="Transparent"
               VerticalAlignment="Top">
-            <StackPanel x:Name="TitleBarContent"
-                        Orientation="Horizontal"
-                        VerticalAlignment="Center"
-                        Margin="16,0">
-                <Image x:Name="ImgAppIcon"
-                       Width="16" Height="16"
+            <TextBlock x:Name="TitleBarAppName"
                        VerticalAlignment="Center"
-                       Margin="0,0,8,0"/>
-                <TextBlock x:Name="TitleBarAppName"
-                           VerticalAlignment="Center"
-                           FontSize="14"/>
-            </StackPanel>
+                       Margin="16,0"
+                       FontSize="14"/>
         </Grid>
 
         <!-- 主内容区域 -->
@@ -45,8 +37,8 @@
         <!-- Splash 遮罩 -->
         <Grid x:Name="SplashOverlay"
               Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-              Visibility="Visible"
-              Opacity="1">
+              Visibility="Collapsed"
+              Opacity="0">
             <Grid.Resources>
                 <Storyboard x:Name="SplashFadeOut">
                     <DoubleAnimation Storyboard.TargetName="SplashOverlay"

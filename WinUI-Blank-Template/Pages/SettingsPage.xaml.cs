@@ -63,9 +63,25 @@ namespace WinUI3.Pages
             {
                 TxtAppName.Text = Package.Current.DisplayName;
                 var v = Package.Current.Id.Version;
-                TxtVersion.Text = $"Version {v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
-                ImgAppIcon.Source = new BitmapImage(Package.Current.Logo);
+                
+                // 获取本地化的版本前缀，如果失败则使用默认值
+                string versionPrefix = "Version";
+                try
+                {
+                    var loader = new Windows.ApplicationModel.Resources.ResourceLoader();
+                    versionPrefix = loader.GetString("VersionPrefix");
+                }
+                catch
+                {
+                    // 使用默认值
+                }
+                
+                TxtVersion.Text = $"{versionPrefix} {v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
                 TxtCopyright.Text = $"© {DateTime.Now.Year} {Package.Current.PublisherDisplayName}";
+                
+                // 设置图标 - 使用 BitmapImage
+                var bitmap = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.scale-200.png"));
+                ImgAppIconSettings.Source = bitmap;
             }
             catch (Exception ex)
             {

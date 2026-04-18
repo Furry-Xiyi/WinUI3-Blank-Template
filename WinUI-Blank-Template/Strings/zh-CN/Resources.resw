@@ -216,4 +216,7 @@
   <data name="DialogMessage.Text" xml:space="preserve">
     <value>是否允许？</value>
   </data>
+  <data name="VersionPrefix" xml:space="preserve">
+    <value>版本</value>
+  </data>
 </root>

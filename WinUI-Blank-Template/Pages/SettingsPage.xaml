@@ -108,10 +108,9 @@
                 <controls:SettingsExpander IsExpanded="False">
                     <controls:SettingsExpander.Header>
                         <StackPanel Orientation="Horizontal" Spacing="12">
-                            <Image x:Name="ImgAppIcon"
-                                   Width="32"
-                                   Height="32"
-                                   Stretch="Uniform"/>
+                            <Image x:Name="ImgAppIconSettings"
+                                   Width="32" 
+                                   Height="32"/>
                             <StackPanel>
                                 <TextBlock x:Name="TxtAppName"
                                            FontSize="16"

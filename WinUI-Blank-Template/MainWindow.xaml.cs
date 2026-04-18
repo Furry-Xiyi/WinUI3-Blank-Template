@@ -1,6 +1,7 @@
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.System;
+using WinRT.Interop;
 using WinUI3.Dialogs;
 using WinUI3.Pages;
 
@@ -19,6 +21,7 @@ namespace WinUI3
     {
         private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         private static SUBCLASSPROC _subclassProc;
+        private AppWindow m_AppWindow;
         public static MainWindow Instance { get; private set; }
 
         //公共打开链接弹出对话框方法
@@ -54,8 +57,14 @@ namespace WinUI3
             if (Content is FrameworkElement root)
                 root.RequestedTheme = AppThemeManager.CurrentTheme;
 
-            // ✅ Package.Current 冷启动很慢，移到 Root_Loaded 里，由 Splash 遮住
-            // TitleBarAppName.Text / ImgAppIcon.Source 在 Root_Loaded 填充
+            // ✅ 获取 AppWindow 实例
+            m_AppWindow = GetAppWindowForCurrentWindow();
+
+            // ✅ 使用官方推荐方式设置窗口图标（立即生效）
+            m_AppWindow.SetIcon("Assets/AppIcon.ico");
+
+            // ✅ 设置标题栏文本
+            TitleBarAppName.Text = Package.Current.DisplayName;
 
             this.SetTitleBar(TitleBarArea);
 
@@ -70,6 +79,14 @@ namespace WinUI3
 
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             SetMinWindowSize(hwnd, minWidth: 800, minHeight: 520);
+        }
+
+        // ── 获取 AppWindow 实例 ──────────────────────────────────────
+        private AppWindow GetAppWindowForCurrentWindow()
+        {
+            IntPtr hWnd = WindowNative.GetWindowHandle(this);
+            WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            return AppWindow.GetFromWindowId(wndId);
         }
 
         // ── 导航核心：tag → 页面类型（约定：tag首字母大写 + "Page"）──
@@ -148,6 +165,10 @@ namespace WinUI3
         // ── Splash ───────────────────────────────────────────────────
         public async void ShowSplash()
         {
+            // 显示 Splash
+            SplashOverlay.Visibility = Visibility.Visible;
+            SplashOverlay.Opacity = 1;
+
             await Task.Delay(1500);
 
             SplashFadeOut.Completed += (s, e) =>
@@ -210,10 +231,7 @@ namespace WinUI3
 
         private void Root_Loaded(object sender, RoutedEventArgs e)
         {
-            // ✅ Splash 遮住，在这里做慢操作用户完全无感知
-            TitleBarAppName.Text = Package.Current.DisplayName;
-            ImgAppIcon.Source = new BitmapImage(Package.Current.Logo);
-
+            // ✅ 图标和标题已在构造函数中设置，这里只处理其他初始化
             ApplySettings();
             UpdateBackButton();
 
