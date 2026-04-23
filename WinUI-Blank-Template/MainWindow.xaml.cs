@@ -210,23 +210,36 @@ namespace WinUI3
         // ── Splash ───────────────────────────────────────────────────
         public async void ShowSplash()
         {
-            // 显示 Splash
             SplashOverlay.Visibility = Visibility.Visible;
             SplashOverlay.Opacity = 1;
 
+            // 等待短暂时间后开始淡入动画（纯色 -> 启动屏幕）
+            await Task.Delay(100);
+            SplashFadeIn.Begin();
+
+            // 等待淡入完成 + 显示时间
             await Task.Delay(1500);
 
+            // 使用 TaskCompletionSource 等待动画完全完成
+            var tcs = new TaskCompletionSource<bool>();
+            
             SplashFadeOut.Completed += (s, e) =>
             {
-                SplashOverlay.Visibility = Visibility.Collapsed;
-
-                bool sound = _localSettings.Values["EnableSound"] is bool b ? b : true;
-                ElementSoundPlayer.State = sound
-                    ? ElementSoundPlayerState.On
-                    : ElementSoundPlayerState.Off;
+                tcs.SetResult(true);
             };
 
             SplashFadeOut.Begin();
+            
+            // 等待淡出动画完成
+            await tcs.Task;
+            
+            // 确保启动屏幕完全隐藏
+            SplashOverlay.Visibility = Visibility.Collapsed;
+
+            bool sound = _localSettings.Values["EnableSound"] is bool b ? b : true;
+            ElementSoundPlayer.State = sound
+                ? ElementSoundPlayerState.On
+                : ElementSoundPlayerState.Off;
         }
 
         // ── 最小尺寸：Win32 Subclass ─────────────────────────────────
