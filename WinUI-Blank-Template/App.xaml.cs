@@ -29,12 +29,12 @@ namespace WinUI3
 
             if (!mainInstance.IsCurrent)
             {
-                // 使用 Task.Run 避免阻塞主线程
+                // 等待重定向完成后退出
                 var redirectTask = mainInstance.RedirectActivationToAsync(
                     AppInstance.GetCurrent().GetActivatedEventArgs()
                 );
-                // 等待重定向完成后退出
-                redirectTask.AsTask().Wait(TimeSpan.FromSeconds(5));
+                // 同步等待重定向完成，确保激活请求不会丢失
+                redirectTask.AsTask().Wait();
                 Environment.Exit(0);
                 return;
             }
