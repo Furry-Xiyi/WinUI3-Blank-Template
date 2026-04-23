@@ -52,8 +52,8 @@ namespace WinUI3
             var dialog = new ExternalOpenDialog { XamlRoot = root };
             var result = await dialog.ShowAsync();
 
-            // Secondary 按钮表示"是，打开"
-            if (result == ContentDialogResult.Secondary)
+            // Primary 按钮表示"是，打开"
+            if (result == ContentDialogResult.Primary)
             {
                 try
                 {
