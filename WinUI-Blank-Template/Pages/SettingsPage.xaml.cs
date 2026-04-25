@@ -70,7 +70,7 @@ namespace WinUI3.Pages
             }
         }
 
-        private void OpenLink_Click(object sender, RoutedEventArgs e)
+        private void OpenExternalLink(object sender, RoutedEventArgs e)
         {
             MainWindow.Instance.OpenExternalLink(sender, e);
         }

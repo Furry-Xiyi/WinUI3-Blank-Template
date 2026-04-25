@@ -120,23 +120,20 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>WinUI 3 Template</value>
   </data>
-  <data name="AppTitle" xml:space="preserve">
-    <value>WinUI 3 Template</value>
-  </data>
   <data name="HomeItem.Content" xml:space="preserve">
     <value>Home</value>
   </data>
   <data name="HomePageWelcomeText.Text" xml:space="preserve">
-    <value>Welcome to the homepage, this is a WinUI3 template app</value>
+    <value>Welcome to the homepage, this is a WinUI 3template app</value>
   </data>
   <data name="AppearanceGroup.Text" xml:space="preserve">
-    <value>Appearance &amp; Material</value>
+    <value>Appearance</value>
   </data>
   <data name="ThemeTitle.Text" xml:space="preserve">
     <value>App Theme</value>
   </data>
   <data name="ThemeSubtitle.Text" xml:space="preserve">
-    <value>Select Light, Dark, or System</value>
+    <value>Select the app theme to display</value>
   </data>
   <data name="ThemeSystem.Content" xml:space="preserve">
     <value>System Default</value>
@@ -151,13 +148,7 @@
     <value>Background Material</value>
   </data>
   <data name="MaterialSubtitle.Text" xml:space="preserve">
-    <value>Select Mica or Acrylic</value>
-  </data>
-  <data name="NavGroup.Text" xml:space="preserve">
-    <value>Navigation</value>
-  </data>
-  <data name="Settings_NavCard.Header" xml:space="preserve">
-    <value>Navigation Pane Position</value>
+    <value>Select the app material to display</value>
   </data>
   <data name="PanePositionLeft.Content" xml:space="preserve">
     <value>Left</value>
@@ -168,6 +159,9 @@
   <data name="SoundGroup.Text" xml:space="preserve">
     <value>Sound</value>
   </data>
+  <data name="SoundToggle.Header" xml:space="preserve">
+    <value>Enable Control Sounds</value>
+  </data>
   <data name="AboutGroup.Text" xml:space="preserve">
     <value>About</value>
   </data>
@@ -175,7 +169,7 @@
     <value>QQ Group</value>
   </data>
   <data name="DiscordGroup.Text" xml:space="preserve">
-    <value>Discord</value>
+    <value>Discord Channel</value>
   </data>
   <data name="Feedback.Text" xml:space="preserve">
     <value>Send Feedback</value>
@@ -192,19 +186,22 @@
   <data name="DialogMessage.Text" xml:space="preserve">
     <value>Do you allow it?</value>
   </data>
+  <data name="HomePageJoinButton.Content" xml:space="preserve">
+    <value>View GitHub repository</value>
+  </data>
+  <data name="Settings_SoundCard.Description" xml:space="preserve">
+    <value>Control interaction sounds in the app</value>
+  </data>
   <data name="Settings_NavCard.Description" xml:space="preserve">
-    <value>Set the navigation bar to display on the left or top</value>
+    <value>Select the navigation bar position to display</value>
   </data>
   <data name="Settings_SoundCard.Header" xml:space="preserve">
     <value>Control sound</value>
   </data>
-  <data name="HomePageJoinButton.Content" xml:space="preserve">
-    <value>View GitHub repository</value>
+  <data name="Settings_NavCard.Header" xml:space="preserve">
+    <value>Navigation Pane Position</value>
   </data>
   <data name="Settings_Breadcrumb" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="Settings_SoundCard.Description" xml:space="preserve">
-    <value>Control interaction sounds in the app</value>
+    <value>Settngs</value>
   </data>
 </root>
