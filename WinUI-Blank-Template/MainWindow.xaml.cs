@@ -59,8 +59,7 @@ namespace WinUI3
 
             this.SetTitleBar(TitleBarArea);
 
-            NavView.SelectedItem = NavView.MenuItems[0];
-            NavigateByTag("home");
+            // 移除原本在这里的 NavigateByTag("home")，让给 StartLoadingContent 以保证 Splash 优先渲染
             ContentFrame.Navigated += ContentFrame_Navigated;
 
             this.Activated += MainWindow_Activated;
@@ -70,6 +69,13 @@ namespace WinUI3
 
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             SetMinWindowSize(hwnd, minWidth: 800, minHeight: 520);
+        }
+
+        // 专门提取出来的加载逻辑
+        public void StartLoadingContent()
+        {
+            NavView.SelectedItem = NavView.MenuItems[0];
+            NavigateByTag("home");
         }
 
         private static Type TagToPageType(string tag)
@@ -156,9 +162,11 @@ namespace WinUI3
             TitleBarAppName.Opacity = isActive ? 1.0 : 0.5;
         }
 
-        public async void ShowSplash()
+        // 接收已加载完成的信号
+        public async Task FinishLoadingAndHideSplashAsync()
         {
-            await Task.Delay(1500);
+            // 收到信息后延迟 500ms
+            await Task.Delay(500);
 
             SplashFadeOut.Completed += (s, e) =>
             {
