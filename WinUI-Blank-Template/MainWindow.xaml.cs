@@ -2,11 +2,11 @@ using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
@@ -19,12 +19,7 @@ namespace WinUI3
 {
     public sealed partial class MainWindow : Window
     {
-        // Win32 常量
-        private const uint WM_GETMINMAXINFO = 0x0024;
-        private const int SW_RESTORE = 9;
-
         private readonly ApplicationDataContainer _localSettings = ApplicationData.Current.LocalSettings;
-        private static SUBCLASSPROC? _subclassProc;
         private readonly AppWindow _appWindow;
         private readonly IntPtr _hwnd;
         
@@ -81,8 +76,8 @@ namespace WinUI3
             // ✅ 使用官方推荐方式设置窗口图标（立即生效）
             _appWindow.SetIcon("Assets/AppIcon.ico");
 
-            // ✅ 设置标题栏文本
-            TitleBarAppName.Text = Package.Current.DisplayName;
+            // ✅ 设置标题栏图标和文字（在 Root_Loaded 中填充，由 Splash 遮住）
+            // TitleBarAppName.Text / ImgAppIcon.Source 在 Root_Loaded 填充
 
             this.SetTitleBar(TitleBarArea);
 
@@ -95,8 +90,6 @@ namespace WinUI3
 
             if (Content is FrameworkElement rootEl)
                 rootEl.Loaded += Root_Loaded;
-
-            SetMinWindowSize(_hwnd, minWidth: 800, minHeight: 520);
         }
 
         // ── 获取 AppWindow 实例 ──────────────────────────────────────
@@ -185,19 +178,14 @@ namespace WinUI3
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
             bool isActive = args.WindowActivationState != WindowActivationState.Deactivated;
-            TitleBarAppName.Opacity = isActive ? 1.0 : 0.5;
+            double opacity = isActive ? 1.0 : 0.5;
+            TitleBarAppName.Opacity = opacity;
+            ImgAppIcon.Opacity = opacity;
         }
 
         // ── 窗口关闭清理 ────────────────────────────────────────────
         private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
-            // 清理 Win32 subclass
-            if (_subclassProc != null)
-            {
-                RemoveWindowSubclass(_hwnd, _subclassProc, 0);
-                _subclassProc = null;
-            }
-
             // 清理事件订阅
             if (Content is FrameworkElement root)
             {
@@ -242,56 +230,12 @@ namespace WinUI3
                 : ElementSoundPlayerState.Off;
         }
 
-        // ── 最小尺寸：Win32 Subclass ─────────────────────────────────
-        static int _minW, _minH;
-
-        static void SetMinWindowSize(IntPtr hwnd, int minWidth, int minHeight)
-        {
-            _minW = minWidth;
-            _minH = minHeight;
-            _subclassProc = SubclassProc;
-            SetWindowSubclass(hwnd, _subclassProc, 0, 0);
-        }
-
-        static nuint SubclassProc(IntPtr hWnd, uint uMsg, nuint wParam, nint lParam,
-                                   nuint uIdSubclass, nuint dwRefData)
-        {
-            if (uMsg == WM_GETMINMAXINFO)
-            {
-                double dpi = GetDpiForWindow(hWnd) / 96.0;
-                var info = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                info.ptMinTrackSize.x = (int)(_minW * dpi);
-                info.ptMinTrackSize.y = (int)(_minH * dpi);
-                Marshal.StructureToPtr(info, lParam, true);
-            }
-            return DefSubclassProc(hWnd, uMsg, wParam, lParam);
-        }
-
-        delegate nuint SUBCLASSPROC(IntPtr hWnd, uint uMsg, nuint wParam, nint lParam,
-                                     nuint uIdSubclass, nuint dwRefData);
-
-        [DllImport("comctl32.dll")]
-        static extern bool SetWindowSubclass(IntPtr hWnd, SUBCLASSPROC pfnSubclass,
-                                              nuint uIdSubclass, nuint dwRefData);
-        [DllImport("comctl32.dll")]
-        static extern bool RemoveWindowSubclass(IntPtr hWnd, SUBCLASSPROC pfnSubclass, nuint uIdSubclass);
-        [DllImport("comctl32.dll")]
-        static extern nuint DefSubclassProc(IntPtr hWnd, uint uMsg, nuint wParam, nint lParam);
-        [DllImport("user32.dll")]
-        static extern uint GetDpiForWindow(IntPtr hWnd);
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct MINMAXINFO
-        {
-            public POINT ptReserved, ptMaxSize, ptMaxPosition, ptMinTrackSize, ptMaxTrackSize;
-        }
-        [StructLayout(LayoutKind.Sequential)]
-        struct POINT { public int x, y; }
-        // ─────────────────────────────────────────────────────────────
-
         private void Root_Loaded(object sender, RoutedEventArgs e)
         {
-            // ✅ 图标和标题已在构造函数中设置，这里只处理其他初始化
+            // ✅ Splash 遮住，在这里做慢操作用户完全无感知
+            TitleBarAppName.Text = Package.Current.DisplayName;
+            ImgAppIcon.Source = new BitmapImage(Package.Current.Logo);
+
             ApplySettings();
             UpdateBackButton();
 
