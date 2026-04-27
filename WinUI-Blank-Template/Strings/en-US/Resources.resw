@@ -120,14 +120,11 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>WinUI 3 Template</value>
   </data>
-  <data name="AppTitle" xml:space="preserve">
-    <value>WinUI 3 Template</value>
-  </data>
   <data name="HomeItem.Content" xml:space="preserve">
     <value>Home</value>
   </data>
   <data name="HomePageWelcomeText.Text" xml:space="preserve">
-    <value>Welcome to the homepage, this is a WinUI3 template app</value>
+    <value>Welcome to the homepage, this is a WinUI 3template app</value>
   </data>
   <data name="HomePageJoinButton.Content" xml:space="preserve">
     <value>View GitHub repository</value>
@@ -136,12 +133,12 @@
     <value>Settings</value>
   </data>
   <data name="AppearanceGroup.Text" xml:space="preserve">
-    <value>Appearance &amp; Material</value>
+    <value>Appearance</value>
   </data>
   <data name="ThemeSettingsExpander.Header" xml:space="preserve">
     <value>App Theme</value>
   </data>
-  <data name="ThemeSettingsExpander.Description" xml:space="preserve">
+  <data name="ThemeSubtitle.Text" xml:space="preserve">
     <value>Select Light, Dark, or System</value>
   </data>
   <data name="ThemeSystem.Content" xml:space="preserve">
@@ -157,6 +154,9 @@
     <value>Background Material</value>
   </data>
   <data name="MaterialSettingsExpander.Description" xml:space="preserve">
+    <value>Select Mica or Acrylic</value>
+  </data>
+  <data name="MaterialSubtitle.Text" xml:space="preserve">
     <value>Select Mica or Acrylic</value>
   </data>
   <data name="MaterialMica.Content" xml:space="preserve">
@@ -187,7 +187,7 @@
     <value>Sound</value>
   </data>
   <data name="SoundSettingsCard.Header" xml:space="preserve">
-    <value>Control sound</value>
+    <value>Control Sound</value>
   </data>
   <data name="SoundSettingsCard.Description" xml:space="preserve">
     <value>Control interaction sounds in the app</value>
@@ -199,7 +199,7 @@
     <value>QQ Group</value>
   </data>
   <data name="DiscordGroup.Text" xml:space="preserve">
-    <value>Discord</value>
+    <value>Discord Channel</value>
   </data>
   <data name="Feedback.Text" xml:space="preserve">
     <value>Send Feedback</value>
@@ -216,7 +216,13 @@
   <data name="DialogMessage.Text" xml:space="preserve">
     <value>Do you allow it?</value>
   </data>
-  <data name="VersionPrefix" xml:space="preserve">
-    <value>Version</value>
+  <data name="NavSubtitle.Text" xml:space="preserve">
+    <value>Set the navigation bar to display on the left or top</value>
+  </data>
+  <data name="Settings_Breadcrumb" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="HomePageJoinButton.Content" xml:space="preserve">
+    <value>View GitHub repository</value>
   </data>
 </root>

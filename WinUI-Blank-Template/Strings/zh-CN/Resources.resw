@@ -120,14 +120,11 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>WinUI 3模板</value>
   </data>
-  <data name="AppTitle" xml:space="preserve">
-    <value>WinUI 3模板</value>
-  </data>
   <data name="HomeItem.Content" xml:space="preserve">
     <value>主页</value>
   </data>
   <data name="HomePageWelcomeText.Text" xml:space="preserve">
-    <value>欢迎来到主页，这是一个WinUI3模板应用</value>
+    <value>欢迎来到主页，这是一个WinUI 3模板应用</value>
   </data>
   <data name="HomePageJoinButton.Content" xml:space="preserve">
     <value>查看Github仓库</value>
@@ -136,12 +133,12 @@
     <value>设置</value>
   </data>
   <data name="AppearanceGroup.Text" xml:space="preserve">
-    <value>外观与材质</value>
+    <value>外观</value>
   </data>
   <data name="ThemeSettingsExpander.Header" xml:space="preserve">
     <value>应用主题</value>
   </data>
-  <data name="ThemeSettingsExpander.Description" xml:space="preserve">
+  <data name="ThemeSubtitle.Text" xml:space="preserve">
     <value>选择浅色、深色或跟随系统</value>
   </data>
   <data name="ThemeSystem.Content" xml:space="preserve">
@@ -159,11 +156,14 @@
   <data name="MaterialSettingsExpander.Description" xml:space="preserve">
     <value>选择 Mica 或 Acrylic</value>
   </data>
+  <data name="MaterialSubtitle.Text" xml:space="preserve">
+    <value>选择 Mica 或 Acrylic</value>
+  </data>
   <data name="MaterialMica.Content" xml:space="preserve">
-    <value>云母</value>
+    <value>Mica</value>
   </data>
   <data name="MaterialMicaAlt.Content" xml:space="preserve">
-    <value>云母Alt</value>
+    <value>Mica Alt</value>
   </data>
   <data name="MaterialAcrylic.Content" xml:space="preserve">
     <value>亚克力</value>
@@ -196,10 +196,10 @@
     <value>关于</value>
   </data>
   <data name="QQGroup.Text" xml:space="preserve">
-    <value>QQ群</value>
+    <value>QQ 群</value>
   </data>
   <data name="DiscordGroup.Text" xml:space="preserve">
-    <value>Discord频道</value>
+    <value>Discord 频道</value>
   </data>
   <data name="Feedback.Text" xml:space="preserve">
     <value>发送反馈</value>
@@ -216,7 +216,13 @@
   <data name="DialogMessage.Text" xml:space="preserve">
     <value>是否允许？</value>
   </data>
-  <data name="VersionPrefix" xml:space="preserve">
-    <value>版本</value>
+  <data name="NavSubtitle.Text" xml:space="preserve">
+    <value>设置导航栏显示在左侧或顶部</value>
+  </data>
+  <data name="Settings_Breadcrumb" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="HomePageJoinButton.Content" xml:space="preserve">
+    <value>查看Github仓库</value>
   </data>
 </root>
