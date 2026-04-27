@@ -73,7 +73,7 @@ namespace WinUI3
                 AppThemeManager.ApplyMaterial();
 
                 var loader = new ResourceLoader();
-                mw.AppWindow.Title = loader.GetString("AppTitle");
+                mw.AppWindow.Title = loader.GetString("AppDisplayName");
 
                 // 开始加载主应用内容（此时 Splash 会掩盖内部复杂的页面加载过程）
                 mw.StartLoadingContent();
