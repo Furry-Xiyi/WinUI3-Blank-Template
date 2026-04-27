@@ -82,7 +82,9 @@ namespace WinUI3
 
             this.SetTitleBar(TitleBarArea);
 
-            // 移除原本在这里的 NavigateByTag("home")，让给 StartLoadingContent 以保证 Splash 优先渲染
+            // 导航在构造函数中直接执行，不依赖异步流程
+            NavView.SelectedItem = NavView.MenuItems[0];
+            NavigateByTag("home");
             ContentFrame.Navigated += ContentFrame_Navigated;
 
             this.Activated += MainWindow_Activated;
@@ -98,13 +100,6 @@ namespace WinUI3
             IntPtr hWnd = WindowNative.GetWindowHandle(this);
             WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
             return AppWindow.GetFromWindowId(wndId);
-        }
-
-        // 专门提取出来的加载逻辑
-        public void StartLoadingContent()
-        {
-            NavView.SelectedItem = NavView.MenuItems[0];
-            NavigateByTag("home");
         }
 
         // ── 导航核心：tag → 页面类型映射 ──
@@ -215,8 +210,8 @@ namespace WinUI3
             Instance = null;
         }
 
-        // 接收已加载完成的信号
-        public async Task FinishLoadingAndHideSplashAsync()
+        // ── Splash ───────────────────────────────────────────────────
+        public async void ShowSplash()
         {
             SplashOverlay.Visibility = Visibility.Visible;
             SplashOverlay.Opacity = 1;
