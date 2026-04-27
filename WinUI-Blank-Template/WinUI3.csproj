@@ -26,7 +26,9 @@
 		</Content>
 		<Content Include="Assets\LockScreenLogo.scale-200.png" />
 		<Content Include="Assets\Square150x150Logo.scale-200.png" />
-		<Content Include="Assets\Square44x44Logo.scale-200.png" />
+		<Content Include="Assets\Square44x44Logo.scale-200.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
 		<Content Include="Assets\Wide310x150Logo.scale-200.png" />
 	</ItemGroup>
@@ -83,8 +85,9 @@
 		<PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
 		<PublishTrimmed Condition="'$(Configuration)' == 'Debug'">False</PublishTrimmed>
 		<PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
-		<PackageCertificateKeyFile>C:\Users\Furry_Xiyi\Documents\Furry_Moxiao.pfx</PackageCertificateKeyFile>
-		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+		<!-- Disable package signing for Debug builds, enable for Release -->
+		<AppxPackageSigningEnabled Condition="'$(Configuration)' == 'Debug'">False</AppxPackageSigningEnabled>
+		<AppxPackageSigningEnabled Condition="'$(Configuration)' != 'Debug'">True</AppxPackageSigningEnabled>
 		<GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
 		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>

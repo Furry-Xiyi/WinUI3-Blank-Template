@@ -126,14 +126,20 @@
   <data name="HomePageWelcomeText.Text" xml:space="preserve">
     <value>欢迎来到主页，这是一个WinUI 3模板应用</value>
   </data>
+  <data name="HomePageJoinButton.Content" xml:space="preserve">
+    <value>查看Github仓库</value>
+  </data>
+  <data name="SettingsPageTitle.Text" xml:space="preserve">
+    <value>设置</value>
+  </data>
   <data name="AppearanceGroup.Text" xml:space="preserve">
     <value>外观</value>
   </data>
-  <data name="ThemeTitle.Text" xml:space="preserve">
+  <data name="ThemeSettingsExpander.Header" xml:space="preserve">
     <value>应用主题</value>
   </data>
   <data name="ThemeSubtitle.Text" xml:space="preserve">
-    <value>选择要显示的应用主题</value>
+    <value>选择浅色、深色或跟随系统</value>
   </data>
   <data name="ThemeSystem.Content" xml:space="preserve">
     <value>跟随系统</value>
@@ -144,11 +150,32 @@
   <data name="ThemeDark.Content" xml:space="preserve">
     <value>深色</value>
   </data>
-  <data name="MaterialTitle.Text" xml:space="preserve">
+  <data name="MaterialSettingsExpander.Header" xml:space="preserve">
     <value>背景材质</value>
   </data>
+  <data name="MaterialSettingsExpander.Description" xml:space="preserve">
+    <value>选择 Mica 或 Acrylic</value>
+  </data>
   <data name="MaterialSubtitle.Text" xml:space="preserve">
-    <value>选择要显示的应用材质</value>
+    <value>选择 Mica 或 Acrylic</value>
+  </data>
+  <data name="MaterialMica.Content" xml:space="preserve">
+    <value>Mica</value>
+  </data>
+  <data name="MaterialMicaAlt.Content" xml:space="preserve">
+    <value>Mica Alt</value>
+  </data>
+  <data name="MaterialAcrylic.Content" xml:space="preserve">
+    <value>亚克力</value>
+  </data>
+  <data name="NavGroup.Text" xml:space="preserve">
+    <value>导航栏</value>
+  </data>
+  <data name="NavSettingsCard.Header" xml:space="preserve">
+    <value>导航栏位置</value>
+  </data>
+  <data name="NavSettingsCard.Description" xml:space="preserve">
+    <value>设置导航栏显示在左侧或顶部</value>
   </data>
   <data name="PanePositionLeft.Content" xml:space="preserve">
     <value>左侧</value>
@@ -159,8 +186,11 @@
   <data name="SoundGroup.Text" xml:space="preserve">
     <value>声音</value>
   </data>
-  <data name="SoundToggle.Header" xml:space="preserve">
-    <value>启用控件声音</value>
+  <data name="SoundSettingsCard.Header" xml:space="preserve">
+    <value>控件声音</value>
+  </data>
+  <data name="SoundSettingsCard.Description" xml:space="preserve">
+    <value>控制应用中的交互提示音</value>
   </data>
   <data name="AboutGroup.Text" xml:space="preserve">
     <value>关于</value>
@@ -186,22 +216,13 @@
   <data name="DialogMessage.Text" xml:space="preserve">
     <value>是否允许？</value>
   </data>
-  <data name="HomePageJoinButton.Content" xml:space="preserve">
-    <value>查看Github仓库</value>
-  </data>
-  <data name="Settings_SoundCard.Description" xml:space="preserve">
-    <value>控制应用中的交互提示音</value>
-  </data>
-  <data name="Settings_NavCard.Description" xml:space="preserve">
-    <value>选择要显示的导航栏位置</value>
-  </data>
-  <data name="Settings_SoundCard.Header" xml:space="preserve">
-    <value>控件声音</value>
-  </data>
-  <data name="Settings_NavCard.Header" xml:space="preserve">
-    <value>导航栏位置</value>
+  <data name="NavSubtitle.Text" xml:space="preserve">
+    <value>设置导航栏显示在左侧或顶部</value>
   </data>
   <data name="Settings_Breadcrumb" xml:space="preserve">
     <value>设置</value>
+  </data>
+  <data name="HomePageJoinButton.Content" xml:space="preserve">
+    <value>查看Github仓库</value>
   </data>
 </root>

@@ -7,7 +7,6 @@ using Microsoft.Windows.AppLifecycle;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.Storage;
 using Windows.UI;
@@ -16,7 +15,7 @@ namespace WinUI3
 {
     public partial class App : Application
     {
-        public static Window MainWindow { get; private set; }
+        public static Window? MainWindow { get; private set; }
 
         public App()
         {
@@ -30,20 +29,26 @@ namespace WinUI3
 
             if (!mainInstance.IsCurrent)
             {
-                mainInstance.RedirectActivationToAsync(
+                // 等待重定向完成后退出
+                var redirectTask = mainInstance.RedirectActivationToAsync(
                     AppInstance.GetCurrent().GetActivatedEventArgs()
-                ).GetAwaiter().GetResult();
+                );
+                // 同步等待重定向完成，确保激活请求不会丢失
+                redirectTask.AsTask().Wait();
                 Environment.Exit(0);
                 return;
             }
 
             mainInstance.Activated += (_, _) =>
             {
-                MainWindow?.DispatcherQueue.TryEnqueue(() =>
+                if (MainWindow != null)
                 {
-                    var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
-                    BringWindowToFront(hwnd);
-                });
+                    MainWindow.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow);
+                        BringWindowToFront(hwnd);
+                    });
+                }
             };
             // ────────────────────────────────────────────────────────
 
@@ -56,33 +61,16 @@ namespace WinUI3
             // ✅ 立刻激活窗口，Splash 遮罩第一帧就可见，用户感知秒开
             MainWindow.Activate();
 
-            // ✅ 将其它初始化和内容加载剥离到异步流程中执行
-            _ = InitializeAppAfterSplashAsync();
-        }
-
-        private async Task InitializeAppAfterSplashAsync()
-        {
-            // 让出当前线程，稍微等待以确保系统已经将带 Splash 遮罩的窗口渲染在屏幕上
-            await Task.Delay(50);
-
-            var mw = (MainWindow)MainWindow;
-
-            mw.DispatcherQueue.TryEnqueue(() =>
+            // ✅ 其余初始化全部延后到下一帧，Splash 完全遮住，用户无感知
+            MainWindow.DispatcherQueue.TryEnqueue(() =>
             {
-                try { mw.AppWindow.SetIcon("Assets/AppIcon.ico"); } catch { }
+                try { MainWindow.AppWindow.SetIcon("Assets/AppIcon.ico"); } catch { }
                 AppThemeManager.ApplyMaterial();
 
                 var loader = new ResourceLoader();
-                mw.AppWindow.Title = loader.GetString("AppTitle");
+                MainWindow.AppWindow.Title = loader.GetString("AppTitle");
 
-                // 开始加载主应用内容（此时 Splash 会掩盖内部复杂的页面加载过程）
-                mw.StartLoadingContent();
-            });
-
-            // 向 Splash 发送完成信息
-            mw.DispatcherQueue.TryEnqueue(async () =>
-            {
-                await mw.FinishLoadingAndHideSplashAsync();
+                ((MainWindow)MainWindow).ShowSplash();
             });
         }
 
@@ -117,7 +105,11 @@ namespace WinUI3
                     _ => ElementTheme.Default
                 };
             }
-            catch { CurrentTheme = ElementTheme.Default; }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"LoadSettings - Theme error: {ex.Message}");
+                CurrentTheme = ElementTheme.Default;
+            }
 
             try
             {
@@ -129,7 +121,11 @@ namespace WinUI3
                     _ => BackgroundMaterial.Mica
                 };
             }
-            catch { CurrentMaterial = BackgroundMaterial.Mica; }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"LoadSettings - Material error: {ex.Message}");
+                CurrentMaterial = BackgroundMaterial.Mica;
+            }
 
             try
             {
@@ -140,7 +136,11 @@ namespace WinUI3
                     ? ElementSoundPlayerState.On
                     : ElementSoundPlayerState.Off;
             }
-            catch { ElementSoundPlayer.State = ElementSoundPlayerState.On; }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"LoadSettings - Sound error: {ex.Message}");
+                ElementSoundPlayer.State = ElementSoundPlayerState.On;
+            }
         }
 
         public static void ApplyMaterial()
