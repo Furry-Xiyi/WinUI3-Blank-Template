@@ -68,7 +68,7 @@ namespace WinUI3
                 AppThemeManager.ApplyMaterial();
 
                 var loader = new ResourceLoader();
-                MainWindow.AppWindow.Title = loader.GetString("AppTitle");
+                MainWindow.AppWindow.Title = loader.GetString("AppDisplayName");
 
                 ((MainWindow)MainWindow).ShowSplash();
             });
