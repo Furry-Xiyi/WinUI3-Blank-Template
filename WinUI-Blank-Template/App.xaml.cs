@@ -113,7 +113,7 @@ namespace WinUI3
 
             try
             {
-                string material = s.Values["AppMaterial"] as string ?? "MicaAlt";
+                string material = s.Values["AppMaterial"] as string ?? "Mica";
                 CurrentMaterial = material switch
                 {
                     "MicaAlt" => BackgroundMaterial.MicaAlt,

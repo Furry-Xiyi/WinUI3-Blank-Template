@@ -154,16 +154,16 @@
     <value>背景材质</value>
   </data>
   <data name="MaterialSettingsExpander.Description" xml:space="preserve">
-    <value>选择 Mica 或 Acrylic</value>
+    <value>选择云母或亚克力</value>
   </data>
   <data name="MaterialSubtitle.Text" xml:space="preserve">
-    <value>选择 Mica 或 Acrylic</value>
+    <value>选择云母或亚克力</value>
   </data>
   <data name="MaterialMica.Content" xml:space="preserve">
-    <value>Mica</value>
+    <value>云母</value>
   </data>
   <data name="MaterialMicaAlt.Content" xml:space="preserve">
-    <value>Mica Alt</value>
+    <value>云母高透</value>
   </data>
   <data name="MaterialAcrylic.Content" xml:space="preserve">
     <value>亚克力</value>
