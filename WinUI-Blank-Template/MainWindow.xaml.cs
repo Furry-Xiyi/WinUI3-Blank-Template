@@ -226,15 +226,8 @@ namespace WinUI3
 
         private void Root_Loaded(object sender, RoutedEventArgs e)
         {
-            string displayName = _loader.GetString("AppDisplayName");
-            TitleBarAppName.Text = displayName;
+            TitleBarAppName.Text = Package.Current.DisplayName;
             ImgAppIcon.Source = new BitmapImage(Package.Current.Logo);
-
-            // 确保任务栏显示应用名称
-            if (this.AppWindow != null && string.IsNullOrEmpty(this.AppWindow.Title))
-            {
-                this.AppWindow.Title = displayName;
-            }
 
             ApplySettings();
             UpdateBackButton();
