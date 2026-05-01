@@ -9,7 +9,7 @@
   IgnorableNamespaces="uap rescap systemai">
 
   <Identity
-    Name="28AE62C8.FurryXiyi.WinUI3Template"
+    Name="28AE62C8.YunMoXing.WinUI3Template"
     Publisher="CN=69199A48-A765-47C7-BD15-A581600DBBC9"
     Version="3.0.1.0" />
 
@@ -17,7 +17,7 @@
 
   <Properties>
     <DisplayName>ms-resource:AppDisplayName</DisplayName>
-    <PublisherDisplayName>惜忆想睡觉</PublisherDisplayName>
+    <PublisherDisplayName>云漠星</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

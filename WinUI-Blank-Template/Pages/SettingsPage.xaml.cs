@@ -11,7 +11,7 @@ namespace WinUI3.Pages
 {
     public sealed partial class SettingsPage : Page
     {
-        private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        private readonly ApplicationDataContainer _localSettings = ApplicationData.Current.LocalSettings;
         private bool _isInitializing = true;
 
         public SettingsPage()
@@ -29,7 +29,7 @@ namespace WinUI3.Pages
 
         private void LoadUI()
         {
-            string theme = localSettings.Values["AppTheme"] as string ?? "System";
+            string theme = _localSettings.Values["AppTheme"] as string ?? "System";
             RbTheme.SelectedIndex = theme switch
             {
                 "Light" => 1,
@@ -37,7 +37,7 @@ namespace WinUI3.Pages
                 _ => 0
             };
 
-            string material = localSettings.Values["AppMaterial"] as string ?? "MicaAlt";
+            string material = _localSettings.Values["AppMaterial"] as string ?? "Mica";
             RbMaterial.SelectedIndex = material switch
             {
                 "MicaAlt" => 1,
@@ -45,12 +45,12 @@ namespace WinUI3.Pages
                 _ => 0
             };
 
-            string pos = localSettings.Values["PanePosition"] as string ?? "Left";
+            string pos = _localSettings.Values["PanePosition"] as string ?? "Left";
             PanePositionCombo.SelectedIndex = pos == "Top" ? 1 : 0;
 
-            bool sound = localSettings.Values["EnableSound"] is bool b ? b : true;
-            if (localSettings.Values["EnableSound"] == null)
-                localSettings.Values["EnableSound"] = true;
+            bool sound = _localSettings.Values["EnableSound"] is bool b ? b : true;
+            if (_localSettings.Values["EnableSound"] == null)
+                _localSettings.Values["EnableSound"] = true;
             SoundToggle.IsOn = sound;
         }
 
@@ -60,19 +60,37 @@ namespace WinUI3.Pages
             {
                 TxtAppName.Text = Package.Current.DisplayName;
                 var v = Package.Current.Id.Version;
-                TxtVersion.Text = $"{v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
-                ImgAppIcon.Source = new BitmapImage(Package.Current.Logo);
-                TxtCopyright.Text = $"©{DateTime.Now.Year} {Package.Current.PublisherDisplayName}。保留所有权利。";
+                
+                // 获取本地化的版本前缀，如果失败则使用默认值
+                string versionPrefix = "Version";
+                try
+                {
+                    var loader = new Windows.ApplicationModel.Resources.ResourceLoader();
+                    versionPrefix = loader.GetString("VersionPrefix");
+                }
+                catch
+                {
+                    // 使用默认值
+                }
+                
+                TxtVersion.Text = $"{versionPrefix} {v.Major}.{v.Minor}.{v.Build}.{v.Revision}";
+                TxtCopyright.Text = $"© {DateTime.Now.Year} {Package.Current.PublisherDisplayName}";
+                
+                // 设置图标 - 使用 BitmapImage
+                var bitmap = new BitmapImage(new Uri("ms-appx:///Assets/Square44x44Logo.scale-200.png"));
+                ImgAppIconSettings.Source = bitmap;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"LoadAppInfo 错误: {ex.Message}");
+                // 非打包应用时不设置，保持空白
             }
         }
 
         private void OpenExternalLink(object sender, RoutedEventArgs e)
         {
-            MainWindow.Instance.OpenExternalLink(sender, e);
+            if (MainWindow.Instance != null)
+                MainWindow.Instance.OpenExternalLink(sender, e);
         }
 
         private void RbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -85,6 +103,7 @@ namespace WinUI3.Pages
                 2 => "Dark",
                 _ => "System"
             };
+
             var theme = RbTheme.SelectedIndex switch
             {
                 1 => ElementTheme.Light,
@@ -92,7 +111,7 @@ namespace WinUI3.Pages
                 _ => ElementTheme.Default
             };
 
-            localSettings.Values["AppTheme"] = value;
+            _localSettings.Values["AppTheme"] = value;
             AppThemeManager.CurrentTheme = theme;
 
             if (App.MainWindow?.Content is FrameworkElement root)
@@ -112,7 +131,7 @@ namespace WinUI3.Pages
                 _ => "Mica"
             };
 
-            localSettings.Values["AppMaterial"] = value;
+            _localSettings.Values["AppMaterial"] = value;
             AppThemeManager.CurrentMaterial = value switch
             {
                 "MicaAlt" => BackgroundMaterial.MicaAlt,
@@ -127,7 +146,7 @@ namespace WinUI3.Pages
         {
             if (_isInitializing) return;
 
-            localSettings.Values["PanePosition"] = PanePositionCombo.SelectedIndex == 1 ? "Top" : "Left";
+            _localSettings.Values["PanePosition"] = PanePositionCombo.SelectedIndex == 1 ? "Top" : "Left";
 
             if (App.MainWindow is MainWindow mainWindow)
                 mainWindow.ApplySettings();
@@ -138,7 +157,7 @@ namespace WinUI3.Pages
             if (_isInitializing) return;
 
             bool isOn = SoundToggle.IsOn;
-            localSettings.Values["EnableSound"] = isOn;
+            _localSettings.Values["EnableSound"] = isOn;
 
             ElementSoundPlayer.State = isOn
                 ? ElementSoundPlayerState.On

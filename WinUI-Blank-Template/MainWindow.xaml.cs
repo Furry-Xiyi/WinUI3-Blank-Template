@@ -1,17 +1,19 @@
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Windows.ApplicationModel.Resources;
 using System;
+using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.System;
+using WinRT.Interop;
 using WinUI3.Dialogs;
 using WinUI3.Pages;
 
@@ -19,33 +21,47 @@ namespace WinUI3
 {
     public sealed partial class MainWindow : Window
     {
-        private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-        private static SUBCLASSPROC _subclassProc;
-        public static MainWindow Instance { get; private set; }
+        private readonly ApplicationDataContainer _localSettings = ApplicationData.Current.LocalSettings;
+        private readonly AppWindow _appWindow;
+        private readonly IntPtr _hwnd;
+
+        public static MainWindow? Instance { get; private set; }
         public ObservableCollection<string> BreadcrumbItems { get; } = new ObservableCollection<string>();
         private readonly ResourceLoader _loader = new ResourceLoader();
 
+        /// <summary>
+        /// 公共打开链接弹出对话框方法
+        /// </summary>
         public async void OpenExternalLink(object sender, RoutedEventArgs e)
         {
             var root = (ContentFrame.Content as FrameworkElement)?.XamlRoot;
             if (root == null)
                 return;
 
-            if (sender is Button btn && btn.Tag is string url)
-            {
-                var dialog = new ExternalOpenDialog { XamlRoot = root };
-                var result = await dialog.ShowAsync();
-
-                if (result == ContentDialogResult.Primary)
-                    await Launcher.LaunchUriAsync(new Uri(url));
-            }
+            string? url = null;
+            
+            if (sender is Button btn && btn.Tag is string btnUrl)
+                url = btnUrl;
             else if (sender is HyperlinkButton link && link.Tag is string linkUrl)
-            {
-                var dialog = new ExternalOpenDialog { XamlRoot = root };
-                var result = await dialog.ShowAsync();
+                url = linkUrl;
 
-                if (result == ContentDialogResult.Primary)
-                    await Launcher.LaunchUriAsync(new Uri(linkUrl));
+            if (string.IsNullOrEmpty(url))
+                return;
+
+            var dialog = new ExternalOpenDialog { XamlRoot = root };
+            var result = await dialog.ShowAsync();
+
+            // Primary 按钮表示"是，打开"
+            if (result == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    await Launcher.LaunchUriAsync(new Uri(url));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to launch URL: {ex.Message}");
+                }
             }
         }
 
@@ -57,32 +73,49 @@ namespace WinUI3
             if (Content is FrameworkElement root)
                 root.RequestedTheme = AppThemeManager.CurrentTheme;
 
+            // ✅ 获取 AppWindow 实例和窗口句柄
+            _hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            _appWindow = GetAppWindowForCurrentWindow();
+
+            // ✅ 使用官方推荐方式设置窗口图标（立即生效）
+            _appWindow.SetIcon("Assets/AppIcon.ico");
+
             this.SetTitleBar(TitleBarArea);
 
-            // 移除原本在这里的 NavigateByTag("home")，让给 StartLoadingContent 以保证 Splash 优先渲染
+            // 导航在构造函数中直接执行，不依赖异步流程
+            NavView.SelectedItem = NavView.MenuItems[0];
+            NavigateByTag("home");
             ContentFrame.Navigated += ContentFrame_Navigated;
 
             this.Activated += MainWindow_Activated;
+            this.Closed += MainWindow_Closed;
 
             if (Content is FrameworkElement rootEl)
                 rootEl.Loaded += Root_Loaded;
-
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            SetMinWindowSize(hwnd, minWidth: 800, minHeight: 520);
         }
 
-        // 专门提取出来的加载逻辑
-        public void StartLoadingContent()
+        // ── 获取 AppWindow 实例 ──────────────────────────────────────
+        private AppWindow GetAppWindowForCurrentWindow()
         {
-            NavView.SelectedItem = NavView.MenuItems[0];
-            NavigateByTag("home");
+            IntPtr hWnd = WindowNative.GetWindowHandle(this);
+            WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
+            return AppWindow.GetFromWindowId(wndId);
         }
 
-        private static Type TagToPageType(string tag)
+        // ── 导航核心：tag → 页面类型映射 ──
+        private static readonly System.Collections.Generic.Dictionary<string, Type> _pageTypeMap = new()
         {
-            if (string.IsNullOrEmpty(tag)) return null;
-            string typeName = $"WinUI3.Pages.{char.ToUpper(tag[0])}{tag.Substring(1)}Page";
-            return Assembly.GetExecutingAssembly().GetType(typeName);
+            { "home", typeof(HomePage) },
+            { "settings", typeof(SettingsPage) }
+        };
+
+        private static Type? TagToPageType(string tag)
+        {
+            if (string.IsNullOrWhiteSpace(tag)) 
+                return null;
+            
+            _pageTypeMap.TryGetValue(tag.ToLowerInvariant(), out var pageType);
+            return pageType;
         }
 
         private void NavigateByTag(string tag)
@@ -101,8 +134,9 @@ namespace WinUI3
                 return;
             }
 
-            string tag = args.InvokedItemContainer?.Tag?.ToString();
-            NavigateByTag(tag);
+            string? tag = args.InvokedItemContainer?.Tag?.ToString();
+            if (!string.IsNullOrEmpty(tag))
+                NavigateByTag(tag);
         }
 
         private void NavView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
@@ -128,13 +162,13 @@ namespace WinUI3
                 return;
             }
 
-            string pageName = pageType?.Name;
+            string? pageName = pageType?.Name;
             if (pageName == null) return;
 
             foreach (var item in NavView.MenuItems.OfType<NavigationViewItem>())
             {
-                string tag = item.Tag?.ToString();
-                if (TagToPageType(tag) == pageType)
+                string? tag = item.Tag?.ToString();
+                if (!string.IsNullOrEmpty(tag) && TagToPageType(tag) == pageType)
                 {
                     NavView.SelectedItem = item;
                     return;
@@ -159,70 +193,57 @@ namespace WinUI3
         private void MainWindow_Activated(object sender, WindowActivatedEventArgs args)
         {
             bool isActive = args.WindowActivationState != WindowActivationState.Deactivated;
-            TitleBarAppName.Opacity = isActive ? 1.0 : 0.5;
+            double opacity = isActive ? 1.0 : 0.5;
+            TitleBarAppName.Opacity = opacity;
+            ImgAppIcon.Opacity = opacity;
         }
 
-        // 接收已加载完成的信号
-        public async Task FinishLoadingAndHideSplashAsync()
+        // ── 窗口关闭清理 ────────────────────────────────────────────
+        private void MainWindow_Closed(object sender, WindowEventArgs args)
         {
-            // 收到信息后延迟 500ms
-            await Task.Delay(500);
+            // 清理事件订阅
+            if (Content is FrameworkElement root)
+            {
+                root.ActualThemeChanged -= AppThemeManager.OnActualThemeChanged;
+            }
 
+            Instance = null;
+        }
+
+        // ── Splash ───────────────────────────────────────────────────
+        public async void ShowSplash()
+        {
+            SplashOverlay.Visibility = Visibility.Visible;
+            SplashOverlay.Opacity = 1;
+
+            // 等待短暂时间后开始淡入动画（纯色 -> 启动屏幕）
+            await Task.Delay(100);
+            SplashFadeIn.Begin();
+
+            // 等待淡入完成 + 显示时间
+            await Task.Delay(1500);
+
+            // 使用 TaskCompletionSource 等待动画完全完成
+            var tcs = new TaskCompletionSource<bool>();
+            
             SplashFadeOut.Completed += (s, e) =>
             {
-                SplashOverlay.Visibility = Visibility.Collapsed;
-
-                bool sound = localSettings.Values["EnableSound"] is bool b ? b : true;
-                ElementSoundPlayer.State = sound
-                    ? ElementSoundPlayerState.On
-                    : ElementSoundPlayerState.Off;
+                tcs.SetResult(true);
             };
 
             SplashFadeOut.Begin();
+            
+            // 等待淡出动画完成
+            await tcs.Task;
+            
+            // 确保启动屏幕完全隐藏
+            SplashOverlay.Visibility = Visibility.Collapsed;
+
+            bool sound = _localSettings.Values["EnableSound"] is bool b ? b : true;
+            ElementSoundPlayer.State = sound
+                ? ElementSoundPlayerState.On
+                : ElementSoundPlayerState.Off;
         }
-
-        static int _minW, _minH;
-
-        static void SetMinWindowSize(IntPtr hwnd, int minWidth, int minHeight)
-        {
-            _minW = minWidth;
-            _minH = minHeight;
-            _subclassProc = SubclassProc;
-            SetWindowSubclass(hwnd, _subclassProc, 0, 0);
-        }
-
-        static nuint SubclassProc(IntPtr hWnd, uint uMsg, nuint wParam, nint lParam,
-                                   nuint uIdSubclass, nuint dwRefData)
-        {
-            if (uMsg == 0x0024)
-            {
-                double dpi = GetDpiForWindow(hWnd) / 96.0;
-                var info = Marshal.PtrToStructure<MINMAXINFO>(lParam);
-                info.ptMinTrackSize.x = (int)(_minW * dpi);
-                info.ptMinTrackSize.y = (int)(_minH * dpi);
-                Marshal.StructureToPtr(info, lParam, true);
-            }
-            return DefSubclassProc(hWnd, uMsg, wParam, lParam);
-        }
-
-        delegate nuint SUBCLASSPROC(IntPtr hWnd, uint uMsg, nuint wParam, nint lParam,
-                                     nuint uIdSubclass, nuint dwRefData);
-
-        [DllImport("comctl32.dll")]
-        static extern bool SetWindowSubclass(IntPtr hWnd, SUBCLASSPROC pfnSubclass,
-                                              nuint uIdSubclass, nuint dwRefData);
-        [DllImport("comctl32.dll")]
-        static extern nuint DefSubclassProc(IntPtr hWnd, uint uMsg, nuint wParam, nint lParam);
-        [DllImport("user32.dll")]
-        static extern uint GetDpiForWindow(IntPtr hWnd);
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct MINMAXINFO
-        {
-            public POINT ptReserved, ptMaxSize, ptMaxPosition, ptMinTrackSize, ptMaxTrackSize;
-        }
-        [StructLayout(LayoutKind.Sequential)]
-        struct POINT { public int x, y; }
 
         private void Root_Loaded(object sender, RoutedEventArgs e)
         {
@@ -243,9 +264,9 @@ namespace WinUI3
         {
             try
             {
-                string position = localSettings.Values["PanePosition"] as string ?? "Left";
-                if (localSettings.Values["PanePosition"] == null)
-                    localSettings.Values["PanePosition"] = "Left";
+                string position = _localSettings.Values["PanePosition"] as string ?? "Left";
+                if (_localSettings.Values["PanePosition"] == null)
+                    _localSettings.Values["PanePosition"] = "Left";
 
                 NavView.PaneDisplayMode = position == "Top"
                     ? NavigationViewPaneDisplayMode.Top
@@ -253,7 +274,7 @@ namespace WinUI3
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"ApplySettings Error: {ex.Message}");
+                Debug.WriteLine($"ApplySettings Error: {ex.Message}");
             }
         }
     }
